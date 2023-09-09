@@ -783,17 +783,16 @@ func Demand() (r, c, i float64) {
 }
 
 var StructureTooltips = map[int]string{
-	StructureToggleHelp:                  "Help",
-	StructureToggleTransparentStructures: "Transparent buildings",
-	StructureBulldozer:                   "Bulldozer",
-	StructureRoad:                        "Road",
-	StructurePoliceStation:               "Police station",
-	StructurePowerPlantCoal:              "Coal power plant",
-	StructurePowerPlantSolar:             "Solar power plant",
-	StructurePowerPlantNuclear:           "Nuclear plant",
-	StructureResidentialZone:             "Residential zone",
-	StructureCommercialZone:              "Commercial zone",
-	StructureIndustrialZone:              "Industrial zone",
+	StructureToggleHelp:        "Help",
+	StructureBulldozer:         "Bulldozer",
+	StructureRoad:              "Road",
+	StructurePoliceStation:     "Police station",
+	StructurePowerPlantCoal:    "Coal power plant",
+	StructurePowerPlantSolar:   "Solar power plant",
+	StructurePowerPlantNuclear: "Nuclear plant",
+	StructureResidentialZone:   "Residential zone",
+	StructureCommercialZone:    "Commercial zone",
+	StructureIndustrialZone:    "Industrial zone",
 }
 
 var StructureCosts = map[int]int{

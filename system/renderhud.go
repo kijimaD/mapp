@@ -101,8 +101,6 @@ func (s *RenderHudSystem) drawSidebar() {
 			selected := world.World.HoverStructure == button.StructureType
 			if button.StructureType == world.StructureToggleHelp {
 				selected = world.World.HelpPage != -1
-			} else if button.StructureType == world.StructureToggleTransparentStructures {
-				selected = world.World.TransparentStructures
 			}
 
 			// Draw background.
@@ -123,7 +121,7 @@ func (s *RenderHudSystem) drawSidebar() {
 
 		world.World.HUDButtonRects[i] = r
 		if button != nil {
-			nonHUDButton := button.StructureType == world.StructureToggleHelp || button.StructureType == world.StructureToggleTransparentStructures
+			nonHUDButton := button.StructureType == world.StructureToggleHelp
 			if !nonHUDButton {
 				lastButtonY = y
 			}

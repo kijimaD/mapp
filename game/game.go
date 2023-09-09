@@ -200,15 +200,7 @@ func (g *game) Update() error {
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -1,
 			},
-			{
-				StructureType: world.StructureToggleTransparentStructures,
-				Sprite:        transparentImg,
-				SpriteOffsetX: -12,
-				SpriteOffsetY: -0,
-			},
 		}
-
-		// TODO
 
 		if world.World.Player == 0 {
 			world.World.Player = entity.NewPlayer()

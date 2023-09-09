@@ -19,15 +19,10 @@ import (
 
 type playerMoveSystem struct {
 	Position *component.Position
-	Velocity *component.Velocity
 	Weapon   *component.Weapon
 
-	player       gohan.Entity
-	movement     *MovementSystem
-	lastWalkDirL bool
-
-	rewindTicks    int
-	nextRewindTick int
+	player   gohan.Entity
+	movement *MovementSystem
 
 	scrollDragX, scrollDragY         int
 	scrollCamStartX, scrollCamStartY float64
@@ -269,15 +264,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 							world.SetHelpPage(-1)
 						} else {
 							world.SetHelpPage(0)
-						}
-					} else if button.StructureType == world.StructureToggleTransparentStructures {
-						world.World.TransparentStructures = !world.World.TransparentStructures
-						world.World.HUDUpdated = true
-
-						if world.World.TransparentStructures {
-							world.ShowMessage("Enabled transparency", 3)
-						} else {
-							world.ShowMessage("Disabled transparency", 3)
 						}
 					} else {
 						if world.World.HoverStructure == button.StructureType {

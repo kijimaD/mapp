@@ -26,8 +26,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	parseFlags()
-
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc,
 		syscall.SIGINT,

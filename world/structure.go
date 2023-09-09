@@ -4,7 +4,6 @@ import "code.rocketnine.space/tslocum/gohan"
 
 const (
 	StructureToggleHelp = iota + 1
-	StructureToggleTransparentStructures
 	StructureBulldozer
 	StructureRoad
 	StructureResidentialZone
