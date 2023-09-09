@@ -8,9 +8,8 @@ import (
 
 	"code.rocketnine.space/tslocum/gohan"
 
-	"code.rocketnine.space/tslocum/citylimits/entity"
-
 	"code.rocketnine.space/tslocum/citylimits/asset"
+	"code.rocketnine.space/tslocum/citylimits/entity"
 	"code.rocketnine.space/tslocum/citylimits/system"
 	"code.rocketnine.space/tslocum/citylimits/world"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -208,7 +207,6 @@ func (g *game) Update() error {
 
 		if !g.addedSystems {
 			g.addSystems()
-
 			g.addedSystems = true // TODO
 		}
 
@@ -354,7 +352,6 @@ func (g *game) addSystems() {
 
 func (g *game) loadAssets() error {
 	asset.ImgWhiteSquare.Fill(color.White)
-	asset.LoadSounds(g.audioContext)
 	return nil
 }
 

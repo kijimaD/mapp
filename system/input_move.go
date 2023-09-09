@@ -2,13 +2,8 @@ package system
 
 import (
 	"errors"
-	"math/rand"
 	"os"
 	"strings"
-
-	"github.com/hajimehoshi/ebiten/v2/audio"
-
-	"code.rocketnine.space/tslocum/citylimits/asset"
 
 	"code.rocketnine.space/tslocum/citylimits/component"
 	"code.rocketnine.space/tslocum/citylimits/world"
@@ -64,16 +59,6 @@ func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY in
 			world.World.Zones = append(world.World.Zones, zone)
 		}
 
-		if world.World.HoverStructure != world.StructureBulldozer && playSound {
-			sounds := []*audio.Player{
-				asset.SoundPop2,
-				asset.SoundPop3,
-			}
-			sound := sounds[rand.Intn(len(sounds))]
-			sound.Rewind()
-			sound.Play()
-		}
-
 		if err == nil {
 			world.World.Funds -= cost
 		}
@@ -127,22 +112,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 			world.StartGame()
 		}
 		return nil
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyM) {
-		world.World.MuteMusic = !world.World.MuteMusic
-		if world.World.MuteMusic {
-			asset.SoundMusic1.Pause()
-			asset.SoundMusic2.Pause()
-			asset.SoundMusic3.Pause()
-		} else {
-			world.ResumeSong()
-		}
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyN) {
-		world.World.MuteMusic = false
-		world.PlayNextSong()
 	}
 
 	if world.World.GameOver {
@@ -271,15 +240,10 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 							world.SetHoverStructure(button.StructureType)
 						}
 					}
-					asset.SoundSelect.Rewind()
-					asset.SoundSelect.Play()
 				}
 			} else if world.AltButtonAt(x, y) == 0 {
 				world.World.ShowRCIWindow = !world.World.ShowRCIWindow
 				world.World.HUDUpdated = true
-
-				asset.SoundSelect.Rewind()
-				asset.SoundSelect.Play()
 			}
 		}
 		return nil
@@ -317,9 +281,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 			if updated {
 				world.World.HelpUpdated = true
 				world.World.HUDUpdated = true
-
-				asset.SoundSelect.Rewind()
-				asset.SoundSelect.Play()
 			}
 		}
 		return nil
@@ -350,10 +311,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || (multiUseStructure && ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)) || (multiUseStructure && dragStarted) {
 				if !dragStarted && world.World.Funds >= world.StructureCosts[world.World.HoverStructure] {
 					world.World.BuildDragX, world.World.BuildDragY = int(tileX), int(tileY)
-
-					if world.World.HoverStructure == world.StructureBulldozer {
-						asset.SoundBulldoze.Play()
-					}
 				}
 
 				if world.World.HoverStructure == world.StructureRoad {
@@ -397,7 +354,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 					return nil
 				} else if dragStarted && !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 					world.World.BuildDragX, world.World.BuildDragY = -1, -1
-					asset.SoundBulldoze.Pause()
 				}
 
 				cost := world.StructureCosts[world.World.HoverStructure]

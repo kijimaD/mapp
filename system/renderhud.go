@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image"
 	"image/color"
-	"math"
 	"strconv"
 	"strings"
 
@@ -136,9 +135,6 @@ func (s *RenderHudSystem) drawSidebar() {
 	// Draw RCI indicator.
 	s.drawDemand(buttonWidth/2, indicatorY)
 
-	// Draw PWR indicator.
-	s.drawPower(buttonWidth/2+buttonWidth, indicatorY)
-
 	s.drawPopulation(world.World.ScreenH - 45)
 
 	s.hudImg.DrawImage(s.tmpImg, nil)
@@ -264,72 +260,6 @@ func (s *RenderHudSystem) drawDemand(x, y int) {
 	s.drawButtonBorder(s.tmpImg, rciButtonRect, world.World.ShowRCIWindow)
 
 	world.World.RCIButtonRect = rciButtonRect
-}
-
-func (s *RenderHudSystem) drawPower(x, y int) {
-	const rciSize = 100
-	rciX := x
-	rciY := y
-
-	const rciButtonHeight = 20
-
-	colorPowerNormal := color.RGBA{0, 255, 0, 255}
-	colorPowerOut := color.RGBA{255, 0, 0, 255}
-	colorPowerCapacity := color.RGBA{16, 16, 16, 255}
-	drawPowerBar := func(demand float64, clr color.RGBA, i int) {
-		barOffsetSize := 7
-		barOffset := -barOffsetSize + (i * barOffsetSize)
-		barWidth := 7
-		barX := rciX + buttonWidth/2 - barWidth/2 + barOffset + 4
-		barY := rciY + (rciSize / 2)
-		if demand < 0 {
-			barY += rciButtonHeight / 2
-		} else {
-			barY -= rciButtonHeight / 2
-		}
-		barHeight := int((float64(rciSize) / 2) * demand)
-		s.tmpImg.SubImage(image.Rect(barX, barY, barX+barWidth, barY-barHeight)).(*ebiten.Image).Fill(clr)
-	}
-
-	powerColor := colorPowerNormal
-	if world.World.HavePowerOut || world.World.PowerNeeded > world.World.PowerAvailable {
-		powerColor = colorPowerOut
-	}
-
-	max := world.World.PowerNeeded
-	if world.World.PowerAvailable > max {
-		max = world.World.PowerAvailable
-	}
-
-	pctUsage, pctCapacity := float64(world.World.PowerNeeded)/float64(max), float64(world.World.PowerAvailable)/float64(max)
-	clamp := func(v float64) float64 {
-		if math.IsNaN(v) {
-			return 0
-		}
-		if v < -1 {
-			v = -1
-		} else if v > 1 {
-			v = 1
-		}
-		return v
-	}
-
-	drawPowerBar(clamp(pctUsage), powerColor, 0)
-	drawPowerBar(clamp(pctCapacity), colorPowerCapacity, 1)
-
-	// Draw button.
-	const rciButtonPadding = 12
-	const rciButtonLabelPaddingX = 6
-	const rciButtonLabelPaddingY = 1
-	rciButtonY := rciY + (rciSize / 2) - (rciButtonHeight / 2)
-	rciButtonRect := image.Rect(rciX+rciButtonPadding, rciButtonY, rciX+buttonWidth-rciButtonPadding, rciButtonY+rciButtonHeight)
-
-	s.drawButtonBackground(s.tmpImg, rciButtonRect, false) // TODO
-
-	// Draw label.
-	ebitenutil.DebugPrintAt(s.tmpImg, "POWER", rciX+rciButtonPadding+rciButtonLabelPaddingX, rciButtonY+rciButtonLabelPaddingY)
-
-	s.drawButtonBorder(s.tmpImg, rciButtonRect, false) // TODO
 }
 
 func (s *RenderHudSystem) drawMessages() {
