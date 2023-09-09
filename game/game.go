@@ -336,9 +336,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 func (g *game) addSystems() {
 	// Simulation systems.
 	gohan.AddSystem(system.NewTickSystem())
-	gohan.AddSystem(system.NewPowerScanSystem())
 	gohan.AddSystem(system.NewPopulateSystem())
-	gohan.AddSystem(system.NewTaxSystem())
 
 	// Input systems.
 	g.movementSystem = system.NewMovementSystem()

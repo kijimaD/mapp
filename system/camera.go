@@ -11,7 +11,6 @@ const CameraMoveSpeed = 0.132
 
 type CameraSystem struct {
 	Position *component.Position
-	Weapon   *component.Weapon
 }
 
 func NewCameraSystem() *CameraSystem {

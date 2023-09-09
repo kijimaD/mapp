@@ -19,7 +19,6 @@ import (
 
 type playerMoveSystem struct {
 	Position *component.Position
-	Weapon   *component.Weapon
 
 	player   gohan.Entity
 	movement *MovementSystem

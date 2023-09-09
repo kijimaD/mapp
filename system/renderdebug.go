@@ -5,7 +5,6 @@ import (
 	"image/color"
 	_ "image/png"
 
-	"code.rocketnine.space/tslocum/citylimits/component"
 	"code.rocketnine.space/tslocum/citylimits/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,10 +12,6 @@ import (
 )
 
 type RenderDebugTextSystem struct {
-	Position *component.Position
-	Velocity *component.Velocity
-	Weapon   *component.Weapon
-
 	player   gohan.Entity
 	op       *ebiten.DrawImageOptions
 	debugImg *ebiten.Image

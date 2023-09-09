@@ -6,15 +6,12 @@ import (
 	"runtime"
 	"runtime/pprof"
 
-	"code.rocketnine.space/tslocum/citylimits/component"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type profileSystem struct {
-	Weapon *component.Weapon
-
 	player     gohan.Entity
 	cpuProfile *os.File
 }

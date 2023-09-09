@@ -10,12 +10,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const rewindThreshold = 1
-
 type MovementSystem struct {
 	Position *component.Position
 	Velocity *component.Velocity
-	Weapon   *component.Velocity `gohan:"?"`
 }
 
 func NewMovementSystem() *MovementSystem {
