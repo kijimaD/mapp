@@ -30,7 +30,7 @@ const (
 	YearTicks  = MonthTicks * 12
 )
 const TileSize = 64
-const startingFunds = 10000
+const startingFunds = 100000
 const startingZoom = 1.0
 const SidebarWidth = 199
 const startingTax = 0.12
@@ -85,7 +85,6 @@ type Zone struct {
 	Type       int // StructureResidentialZone, StructureCommercialZone or StructureIndustrialZone
 	X, Y       int
 	Population int
-	Powered    bool
 }
 
 type PowerPlant struct {

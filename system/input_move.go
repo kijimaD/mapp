@@ -107,13 +107,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
-	if !world.World.GameStarted {
-		if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			world.StartGame()
-		}
-		return nil
-	}
-
 	if world.World.GameOver {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			world.World.ResetGame = true

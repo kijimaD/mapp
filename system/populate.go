@@ -102,7 +102,7 @@ func (s *PopulateSystem) Update(_ gohan.Entity) error {
 			} else { // Industrial
 				popI--
 			}
-		} else if offset == 1 && zone.Population < maxPopulation && zone.Powered {
+		} else if offset == 1 && zone.Population < maxPopulation {
 			zone.Population++
 			if zone.Type == world.StructureResidentialZone {
 				popR++

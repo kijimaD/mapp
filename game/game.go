@@ -315,11 +315,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 					continue
 				}
 				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-40), 0, 1, colorScale, alpha, false, false, sprite, screen)
-
-				// Draw power-outs.
-				if world.World.HavePowerOut && world.World.Ticks%(144*2) < int(144.0*1.5) && world.World.PowerOuts[x][y] {
-					drawn += g.renderSprite(float64(x), float64(y), 0, -52, 0, 1, 1, 1, false, false, asset.ImgPower, screen)
-				}
 			}
 		}
 	}

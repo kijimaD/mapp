@@ -24,7 +24,6 @@ var (
 	ImgWhiteSquare = ebiten.NewImage(64, 64)
 	ImgBlackSquare = ebiten.NewImage(64, 64)
 	ImgHelp        = LoadImage("image/help.png")
-	ImgPower       = LoadImage("image/power.png")
 )
 
 func init() {
