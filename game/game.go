@@ -83,7 +83,7 @@ func (g *game) Update() error {
 		var img uint32
 		for x := range world.World.Level.Tiles[0] {
 			for y := range world.World.Level.Tiles[0][x] {
-				img = world.DirtTile
+				img = world.GrassTile
 				if world.World.Level.Tiles[0][x][y].EnvironmentSprite != nil {
 					continue
 				}

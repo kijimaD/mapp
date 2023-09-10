@@ -6,11 +6,13 @@ const (
 	StructureToggleHelp = iota + 1
 	StructureBulldozer
 	StructureRoad
+	StructurePlain
 )
 
 var StructureFilePaths = map[int]string{
 	StructureBulldozer: "map/bulldozer.tmx",
 	StructureRoad:      "map/road.tmx",
+	StructurePlain:     "map/plain.tmx",
 }
 
 type Structure struct {
