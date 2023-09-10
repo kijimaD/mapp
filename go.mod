@@ -1,6 +1,6 @@
 module github.com/kijimaD/mapp
 
-go 1.17
+go 1.20
 
 require (
 	code.rocketnine.space/tslocum/gohan v1.0.0
@@ -23,5 +23,3 @@ require (
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 )
-
-replace github.com/lafriks/go-tiled => github.com/tslocum/go-tiled v0.7.1-0.20220129040705-2d2dec486bd9
