@@ -10,7 +10,6 @@ import (
 type TickSystem struct {
 	Position *component.Position
 	Velocity *component.Velocity
-	Weapon   *component.Weapon
 }
 
 func NewTickSystem() *TickSystem {

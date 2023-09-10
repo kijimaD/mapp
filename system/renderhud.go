@@ -23,7 +23,6 @@ const (
 type RenderHudSystem struct {
 	Position *component.Position
 	Velocity *component.Velocity
-	Weapon   *component.Weapon
 
 	op           *ebiten.DrawImageOptions
 	hudImg       *ebiten.Image

@@ -2,7 +2,6 @@ package game
 
 import (
 	"image/color"
-	"math/rand"
 	"os"
 	"sync"
 
@@ -96,29 +95,10 @@ func (g *game) Update() error {
 		for x := range world.World.Level.Tiles[0] {
 			for y := range world.World.Level.Tiles[0][x] {
 				img = world.DirtTile
-				if rand.Intn(150) == 0 {
-					img = world.GrassTile
-					world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
-					for offsetX := -2 - rand.Intn(7); offsetX < 2+rand.Intn(7); offsetX++ {
-						for offsetY := -2 - rand.Intn(7); offsetY < 2+rand.Intn(7); offsetY++ {
-							if x+offsetX >= 0 && y+offsetY >= 0 && x+offsetX < 256 && y+offsetY < 256 {
-								world.World.Level.Tiles[0][x+offsetX][y+offsetY].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
-								if rand.Intn(4) == 0 {
-									if rand.Intn(3) == 0 {
-										world.World.Level.Tiles[1][x+offsetX][y+offsetY].EnvironmentSprite = world.World.TileImages[world.TreeTileA+world.World.TileImagesFirstGID]
-									} else {
-										world.World.Level.Tiles[1][x+offsetX][y+offsetY].EnvironmentSprite = world.World.TileImages[world.TreeTileB+world.World.TileImagesFirstGID]
-									}
-								}
-							}
-						}
-					}
-				} else {
-					if world.World.Level.Tiles[0][x][y].EnvironmentSprite != nil {
-						continue
-					}
-					world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
+				if world.World.Level.Tiles[0][x][y].EnvironmentSprite != nil {
+					continue
 				}
+				world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
 			}
 		}
 
