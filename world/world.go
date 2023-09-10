@@ -34,7 +34,7 @@ const startingZoom = 1.0
 const SidebarWidth = 199
 const startingTax = 0.12
 
-var DirtTile = uint32(9*32 + (0))
+var DirtTile = uint32(0)
 
 var (
 	GrassTile = uint32(11*32 + (0))
