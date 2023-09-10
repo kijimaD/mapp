@@ -613,16 +613,6 @@ func HUDButtonAt(x, y int) *HUDButton {
 	return nil
 }
 
-func HelpButtonAt(x, y int) int {
-	point := image.Point{x, y}
-	for i, rect := range World.HelpButtonRects {
-		if point.In(rect) {
-			return i
-		}
-	}
-	return -1
-}
-
 func AltButtonAt(x, y int) int {
 	point := image.Point{x, y}
 	if point.In(World.RCIButtonRect) {
@@ -842,12 +832,6 @@ var ZonePowerRequirement = map[int]int{
 	StructureResidentialZone: 1,
 	StructureCommercialZone:  1,
 	StructureIndustrialZone:  1,
-}
-
-func SetHelpPage(page int) {
-	World.HelpPage = page
-	World.HelpUpdated = true
-	World.HUDUpdated = true
 }
 
 func IsPowerPlant(structureType int) bool {

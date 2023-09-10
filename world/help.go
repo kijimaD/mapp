@@ -1,5 +1,7 @@
 package world
 
+import "image"
+
 // HelpText lines must be 39 characters or less.
 var HelpText = []string{`
 Welcome to City Limits!          (1/2)
@@ -14,4 +16,20 @@ middle mouse button while moving your
 mouse, or press right click to center
 the camera on an area immediately.
 `,
+}
+
+func HelpButtonAt(x, y int) int {
+	point := image.Point{x, y}
+	for i, rect := range World.HelpButtonRects {
+		if point.In(rect) {
+			return i
+		}
+	}
+	return -1
+}
+
+func SetHelpPage(page int) {
+	World.HelpPage = page
+	World.HelpUpdated = true
+	World.HUDUpdated = true
 }
