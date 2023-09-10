@@ -290,7 +290,7 @@ func (s *RenderHudSystem) drawPopulation(y int) {
 	}
 
 	const datePadding = 10
-	label := "Pop"
+	label := "Population"
 
 	scale := 2.0
 	x, y := datePadding, y

@@ -128,27 +128,32 @@ func (g *game) Update() error {
 				Sprite:        world.DrawMap(world.StructureResidentialLow),
 				SpriteOffsetX: -12,
 				SpriteOffsetY: -28,
-			}, {
+			},
+			{
 				StructureType: world.StructureCommercialZone,
 				Sprite:        world.DrawMap(world.StructureCommercialLow),
 				SpriteOffsetX: -10,
 				SpriteOffsetY: -28,
-			}, {
+			},
+			{
 				StructureType: world.StructureIndustrialZone,
 				Sprite:        world.DrawMap(world.StructureIndustrialLow),
 				SpriteOffsetX: -10,
 				SpriteOffsetY: -28,
-			}, {
+			},
+			{
 				StructureType: world.StructurePowerPlantCoal,
 				SpriteOffsetX: -20,
 				SpriteOffsetY: 2,
 				Sprite:        world.DrawMap(world.StructurePowerPlantCoal),
-			}, {
+			},
+			{
 				StructureType: world.StructurePowerPlantSolar,
 				SpriteOffsetX: -20,
 				SpriteOffsetY: 2,
 				Sprite:        world.DrawMap(world.StructurePowerPlantSolar),
-			}, {
+			},
+			{
 				StructureType: world.StructurePowerPlantNuclear,
 				SpriteOffsetX: -20,
 				SpriteOffsetY: 2,
