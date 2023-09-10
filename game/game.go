@@ -8,7 +8,6 @@ import (
 	"code.rocketnine.space/tslocum/gohan"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/kijimaD/mapp/asset"
 	"github.com/kijimaD/mapp/entity"
 	"github.com/kijimaD/mapp/system"
@@ -19,32 +18,22 @@ const sampleRate = 44100
 
 // game is an isometric demo game.
 type game struct {
-	w, h int
-
-	audioContext *audio.Context
-
-	op *ebiten.DrawImageOptions
-
-	disableEsc bool
-
-	debugMode  bool
-	cpuProfile *os.File
-
+	w, h           int
+	op             *ebiten.DrawImageOptions
+	disableEsc     bool
+	debugMode      bool
+	cpuProfile     *os.File
 	movementSystem *system.MovementSystem
 	renderSystem   *system.RenderSystem
-
-	addedSystems bool
-
-	updateTicks int
-
+	addedSystems   bool
+	updateTicks    int
 	sync.Mutex
 }
 
 // NewGame returns a new isometric demo game.
 func NewGame() (*game, error) {
 	g := &game{
-		audioContext: audio.NewContext(sampleRate),
-		op:           &ebiten.DrawImageOptions{},
+		op: &ebiten.DrawImageOptions{},
 	}
 
 	err := g.loadAssets()
@@ -208,25 +197,6 @@ func (g *game) renderSprite(x float64, y float64, offsetx float64, offsety float
 
 	target.DrawImage(sprite, g.op)
 	g.op.ColorM.Reset()
-
-	/*s.op.GeoM.Scale(geoScale, geoScale)
-	// Rotate
-	s.op.GeoM.Translate(offsetx, offsety)
-	s.op.GeoM.Rotate(angle)
-	// Move to current isometric position.
-	s.op.GeoM.Translate(x, y)
-	// Translate camera position.
-	s.op.GeoM.Translate(-world.World.CamX, -world.World.CamY)
-	// Zoom.
-	s.op.GeoM.Scale(s.camScale, s.camScale)
-	// Center.
-	//s.op.GeoM.Translate(float64(s.ScreenW/2.0), float64(s.ScreenH/2.0))
-
-	s.op.ColorM.Scale(colorScale, colorScale, colorScale, alpha)
-
-	target.DrawImage(sprite, s.op)
-
-	s.op.ColorM.Reset()*/
 
 	return 1
 }
