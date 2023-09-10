@@ -126,7 +126,6 @@ func (s *RenderHudSystem) drawSidebar() {
 	dateY := lastButtonY + buttonHeight*2 - buttonHeight/2 - 16
 	s.drawDate(dateY)
 	s.drawFunds(dateY + 50)
-	s.drawPopulation(world.World.ScreenH - 45)
 	s.hudImg.DrawImage(s.tmpImg, nil)
 	s.hudImg.SubImage(image.Rect(world.SidebarWidth-1, 0, world.SidebarWidth, world.World.ScreenH)).(*ebiten.Image).Fill(color.Black)
 }
@@ -278,37 +277,6 @@ func (s *RenderHudSystem) drawFunds(y int) {
 	s.tmpImg2.Clear()
 	ebitenutil.DebugPrint(s.tmpImg2, label)
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(float64(x), float64(y))
-	s.hudImg.DrawImage(s.tmpImg2, op)
-}
-
-func (s *RenderHudSystem) drawPopulation(y int) {
-	var population int
-	for _, zone := range world.World.Zones {
-		population += zone.Population
-	}
-
-	const datePadding = 10
-	label := "Population"
-
-	scale := 2.0
-	x, y := datePadding, y
-
-	s.tmpImg2.Clear()
-	ebitenutil.DebugPrint(s.tmpImg2, label)
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(float64(x), float64(y))
-	s.hudImg.DrawImage(s.tmpImg2, op)
-
-	label = world.World.Printer.Sprintf("%d", population)
-
-	x = world.SidebarWidth - 1 - datePadding - (len(label) * 6 * int(scale))
-
-	s.tmpImg2.Clear()
-	ebitenutil.DebugPrint(s.tmpImg2, label)
-	op.GeoM.Reset()
 	op.GeoM.Scale(scale, scale)
 	op.GeoM.Translate(float64(x), float64(y))
 	s.hudImg.DrawImage(s.tmpImg2, op)

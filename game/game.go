@@ -124,24 +124,6 @@ func (g *game) Update() error {
 				SpriteOffsetY: -28,
 			},
 			{
-				StructureType: world.StructureResidentialZone,
-				Sprite:        world.DrawMap(world.StructureResidentialLow),
-				SpriteOffsetX: -12,
-				SpriteOffsetY: -28,
-			},
-			{
-				StructureType: world.StructureCommercialZone,
-				Sprite:        world.DrawMap(world.StructureCommercialLow),
-				SpriteOffsetX: -10,
-				SpriteOffsetY: -28,
-			},
-			{
-				StructureType: world.StructureIndustrialZone,
-				Sprite:        world.DrawMap(world.StructureIndustrialLow),
-				SpriteOffsetX: -10,
-				SpriteOffsetY: -28,
-			},
-			{
 				StructureType: world.StructurePowerPlantCoal,
 				SpriteOffsetX: -20,
 				SpriteOffsetY: 2,
@@ -152,12 +134,6 @@ func (g *game) Update() error {
 				SpriteOffsetX: -20,
 				SpriteOffsetY: 2,
 				Sprite:        world.DrawMap(world.StructurePowerPlantSolar),
-			},
-			{
-				StructureType: world.StructurePowerPlantNuclear,
-				SpriteOffsetX: -20,
-				SpriteOffsetY: 2,
-				Sprite:        world.DrawMap(world.StructurePowerPlantNuclear),
 			},
 			nil,
 			nil,
@@ -314,7 +290,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 func (g *game) addSystems() {
 	// Simulation systems.
 	gohan.AddSystem(system.NewTickSystem())
-	gohan.AddSystem(system.NewPopulateSystem())
 
 	// Input systems.
 	g.movementSystem = system.NewMovementSystem()

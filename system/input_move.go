@@ -50,15 +50,6 @@ func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY in
 			world.World.PowerPlants = append(world.World.PowerPlants, plant)
 		}
 
-		if world.IsZone(structureType) {
-			zone := &world.Zone{
-				Type: world.World.HoverStructure,
-				X:    tileX,
-				Y:    tileY,
-			}
-			world.World.Zones = append(world.World.Zones, zone)
-		}
-
 		if err == nil {
 			world.World.Funds -= cost
 		}
@@ -299,7 +290,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 
 		tileX, tileY := world.ScreenToCartesian(x, y)
 		if tileX >= 0 && tileY >= 0 && tileX < 256 && tileY < 256 {
-			multiUseStructure := world.World.HoverStructure == world.StructureBulldozer || world.World.HoverStructure == world.StructureRoad || world.IsZone(world.World.HoverStructure)
+			multiUseStructure := world.World.HoverStructure == world.StructureBulldozer || world.World.HoverStructure == world.StructureRoad
 			dragStarted := world.World.BuildDragX != -1 || world.World.BuildDragY != -1
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) || (multiUseStructure && ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)) || (multiUseStructure && dragStarted) {
 				if !dragStarted && world.World.Funds >= world.StructureCosts[world.World.HoverStructure] {

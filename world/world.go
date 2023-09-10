@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 	"log"
-	"math"
 	"math/rand"
 	"path/filepath"
 	"strconv"
@@ -79,12 +78,6 @@ var World = &GameWorld{
 	LastBuildY: -1,
 
 	Printer: message.NewPrinter(language.English),
-}
-
-type Zone struct {
-	Type       int // StructureResidentialZone, StructureCommercialZone or StructureIndustrialZone
-	X, Y       int
-	Population int
 }
 
 type PowerPlant struct {
@@ -164,7 +157,6 @@ type GameWorld struct {
 	HelpButtonRects []image.Rectangle
 
 	PowerPlants []*PowerPlant
-	Zones       []*Zone
 
 	HavePowerOut bool
 	PowerOuts    [][]bool
@@ -320,12 +312,6 @@ func LoadTileset() error {
 func ShowBuildCost(structureType int, cost int) {
 	if structureType == StructureBulldozer {
 		ShowMessage(World.Printer.Sprintf("Bulldozed area (-$%d)", cost), 3)
-	} else if structureType == StructureResidentialZone {
-		ShowMessage(World.Printer.Sprintf("Zoned area for residential use (-$%d)", cost), 3)
-	} else if structureType == StructureCommercialZone {
-		ShowMessage(World.Printer.Sprintf("Zoned area for commercial use (-$%d)", cost), 3)
-	} else if structureType == StructureIndustrialZone {
-		ShowMessage(World.Printer.Sprintf("Zoned area for industrial use (-$%d)", cost), 3)
 	} else {
 		ShowMessage(World.Printer.Sprintf("Built %s (-$%d)", strings.ToLower(StructureTooltips[World.HoverStructure]), cost), 3)
 	}
@@ -389,19 +375,6 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		}
 		if !internal {
 			checkSpaces := 2
-		REMOVEZONES:
-			for i, zone := range World.Zones {
-				for dx := 0; dx < checkSpaces; dx++ {
-					for dy := 0; dy < checkSpaces; dy++ {
-						if placeX == zone.X-dx && placeY == zone.Y-dy {
-							World.Zones = append(World.Zones[:i], World.Zones[i+1:]...)
-							bulldozeArea(zone.X, zone.Y, 2)
-							break REMOVEZONES
-						}
-					}
-				}
-			}
-			checkSpaces = 5
 		REMOVEPOWER:
 			for i, plant := range World.PowerPlants {
 				for dx := 0; dx < checkSpaces; dx++ {
@@ -526,11 +499,6 @@ VALIDBUILD:
 
 					if structureType == StructureRoad {
 						World.Power.SetTile(tx, ty, true)
-					}
-
-					isZone := structureType == StructureResidentialZone || structureType == StructureCommercialZone || structureType == StructureIndustrialZone
-					if isZone || structureType == StructurePowerPlantCoal || structureType == StructureBulldozer {
-						World.PowerUpdated = true
 					}
 				}
 
@@ -672,74 +640,21 @@ func SetHoverStructure(structureType int) {
 	World.HUDUpdated = true
 }
 
-func Satisfaction() (r, c, i float64) {
-	popR, _, _ := Population()
-	c = float64(popR) / (maxPopulation / 2)
-	if c > 0.02 {
-		c = 0.02
-	}
-	return 0.02, c, 0.02
-}
-
-func TargetPopulation() (r, c, i int) {
-	currentMax := maxPopulation * ((1 + float64(World.Ticks/(MonthTicks*7))) / 108)
-
-	satisfactionR, satisfactionC, satisfactionI := Satisfaction()
-	return int(satisfactionR * currentMax), int(satisfactionC * currentMax), int(satisfactionI * currentMax)
-}
-
-func Demand() (r, c, i float64) {
-	targetR, targetC, targetI := TargetPopulation()
-
-	populationR, populationC, populationI := Population()
-	r, c, i = float64(targetR)-float64(populationR), float64(targetC)-float64(populationC), float64(targetI)-float64(populationI)
-	max := r
-	if c > max {
-		max = c
-	}
-	if i > max {
-		max = i
-	}
-	barPeak := 100.0
-	r, c, i = r/barPeak, c/barPeak, i/barPeak
-	r, c, i = r*(1-World.TaxR), c*(1-World.TaxC), i*(1-World.TaxI)
-	clamp := func(v float64) float64 {
-		if math.IsNaN(v) {
-			return 0
-		}
-		if v < -1 {
-			v = -1
-		} else if v > 1 {
-			v = 1
-		}
-		return v
-	}
-	return clamp(r), clamp(c), clamp(i)
-}
-
 var StructureTooltips = map[int]string{
-	StructureToggleHelp:        "Help",
-	StructureBulldozer:         "Bulldozer",
-	StructureRoad:              "Road",
-	StructurePoliceStation:     "Police station",
-	StructurePowerPlantCoal:    "Coal power plant",
-	StructurePowerPlantSolar:   "Solar power plant",
-	StructurePowerPlantNuclear: "Nuclear plant",
-	StructureResidentialZone:   "Residential zone",
-	StructureCommercialZone:    "Commercial zone",
-	StructureIndustrialZone:    "Industrial zone",
+	StructureToggleHelp:      "Help",
+	StructureBulldozer:       "Bulldozer",
+	StructureRoad:            "Road",
+	StructurePoliceStation:   "Police station",
+	StructurePowerPlantCoal:  "Coal power plant",
+	StructurePowerPlantSolar: "Solar power plant",
 }
 
 var StructureCosts = map[int]int{
-	StructureBulldozer:         5,
-	StructureRoad:              25,
-	StructurePoliceStation:     1000,
-	StructurePowerPlantCoal:    4000,
-	StructurePowerPlantSolar:   10000,
-	StructurePowerPlantNuclear: 25000,
-	StructureResidentialZone:   100,
-	StructureCommercialZone:    200,
-	StructureIndustrialZone:    100,
+	StructureBulldozer:       5,
+	StructureRoad:            25,
+	StructurePoliceStation:   1000,
+	StructurePowerPlantCoal:  4000,
+	StructurePowerPlantSolar: 10000,
 }
 
 func Tooltip() string {
@@ -769,20 +684,6 @@ var monthNames = []string{
 func Date() (month string, year string) {
 	y, m := World.Ticks/YearTicks, (World.Ticks%YearTicks)/MonthTicks
 	return monthNames[m], strconv.Itoa(startingYear + y)
-}
-
-func Population() (r, c, i int) {
-	for _, zone := range World.Zones {
-		switch zone.Type {
-		case StructureResidentialZone:
-			r += zone.Population
-		case StructureCommercialZone:
-			c += zone.Population
-		case StructureIndustrialZone:
-			i += zone.Population
-		}
-	}
-	return r, c, i
 }
 
 var messageLock = &sync.Mutex{}
@@ -823,21 +724,10 @@ func ValidXY(x, y int) bool {
 }
 
 var PowerPlantCapacities = map[int]int{
-	StructurePowerPlantCoal:    60,
-	StructurePowerPlantSolar:   40,
-	StructurePowerPlantNuclear: 200,
-}
-
-var ZonePowerRequirement = map[int]int{
-	StructureResidentialZone: 1,
-	StructureCommercialZone:  1,
-	StructureIndustrialZone:  1,
+	StructurePowerPlantCoal:  60,
+	StructurePowerPlantSolar: 40,
 }
 
 func IsPowerPlant(structureType int) bool {
-	return structureType == StructurePowerPlantCoal || structureType == StructurePowerPlantSolar || structureType == StructurePowerPlantNuclear
-}
-
-func IsZone(structureType int) bool {
-	return structureType == StructureResidentialZone || structureType == StructureCommercialZone || structureType == StructureIndustrialZone
+	return structureType == StructurePowerPlantCoal || structureType == StructurePowerPlantSolar
 }
