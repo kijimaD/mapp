@@ -1,10 +1,10 @@
-project_name: citylimits
+project_name: mapp
 
 builds:
   -
-    id: citylimits
+    id: mapp
 #    ldflags:
-#      - -s -w -X code.rocketnine.space/tslocum/citylimits/main.Version={{.Version}}
+#      - -s -w -X github.com/kijimaD/mapp/main.Version={{.Version}}
     goos:
       - js
       - linux
@@ -14,9 +14,9 @@ builds:
       - wasm
 archives:
   -
-    id: citylimits
+    id: mapp
     builds:
-      - citylimits
+      - mapp
     replacements:
       386: i386
     format_overrides:

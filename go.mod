@@ -1,4 +1,4 @@
-module code.rocketnine.space/tslocum/citylimits
+module github.com/kijimaD/mapp
 
 go 1.17
 

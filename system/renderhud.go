@@ -7,10 +7,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 
-	"code.rocketnine.space/tslocum/citylimits/component"
-	"code.rocketnine.space/tslocum/citylimits/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/component"
+	"github.com/kijimaD/mapp/world"
 )
 
 const (

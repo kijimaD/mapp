@@ -6,7 +6,7 @@ package main
 import (
 	"flag"
 
-	"code.rocketnine.space/tslocum/citylimits/world"
+	"github.com/kijimaD/mapp/world"
 )
 
 func parseFlags() {

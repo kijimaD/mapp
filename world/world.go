@@ -15,10 +15,10 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
-	"code.rocketnine.space/tslocum/citylimits/asset"
-	"code.rocketnine.space/tslocum/citylimits/component"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/asset"
+	"github.com/kijimaD/mapp/component"
 	"github.com/lafriks/go-tiled"
 )
 

@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"code.rocketnine.space/tslocum/citylimits/component"
+	"github.com/kijimaD/mapp/component"
 	"code.rocketnine.space/tslocum/gohan"
 )
 

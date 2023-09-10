@@ -7,12 +7,12 @@ import (
 
 	"code.rocketnine.space/tslocum/gohan"
 
-	"code.rocketnine.space/tslocum/citylimits/asset"
-	"code.rocketnine.space/tslocum/citylimits/entity"
-	"code.rocketnine.space/tslocum/citylimits/system"
-	"code.rocketnine.space/tslocum/citylimits/world"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/kijimaD/mapp/asset"
+	"github.com/kijimaD/mapp/entity"
+	"github.com/kijimaD/mapp/system"
+	"github.com/kijimaD/mapp/world"
 )
 
 const sampleRate = 44100

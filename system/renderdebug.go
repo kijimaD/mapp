@@ -5,7 +5,7 @@ import (
 	"image/color"
 	_ "image/png"
 
-	"code.rocketnine.space/tslocum/citylimits/world"
+	"github.com/kijimaD/mapp/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"

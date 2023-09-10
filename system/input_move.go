@@ -5,11 +5,11 @@ import (
 	"os"
 	"strings"
 
-	"code.rocketnine.space/tslocum/citylimits/component"
-	"code.rocketnine.space/tslocum/citylimits/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kijimaD/mapp/component"
+	"github.com/kijimaD/mapp/world"
 )
 
 type playerMoveSystem struct {

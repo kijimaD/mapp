@@ -6,8 +6,8 @@ import (
 
 	"golang.org/x/image/colornames"
 
-	"code.rocketnine.space/tslocum/citylimits/component"
-	"code.rocketnine.space/tslocum/citylimits/world"
+	"github.com/kijimaD/mapp/component"
+	"github.com/kijimaD/mapp/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 )

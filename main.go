@@ -6,14 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"code.rocketnine.space/tslocum/citylimits/world"
+	"github.com/kijimaD/mapp/world"
 
-	"code.rocketnine.space/tslocum/citylimits/game"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/game"
 )
 
 func main() {
-	ebiten.SetWindowTitle("City Limits")
+	ebiten.SetWindowTitle("Mapp")
 	ebiten.SetWindowResizable(true)
 	ebiten.SetWindowSize(640, 480)
 	ebiten.SetMaxTPS(144)
