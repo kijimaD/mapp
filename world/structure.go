@@ -7,12 +7,14 @@ const (
 	StructureBulldozer
 	StructureRoad
 	StructurePlain
+	StationBusStop
 )
 
 var StructureFilePaths = map[int]string{
 	StructureBulldozer: "map/bulldozer.tmx",
 	StructureRoad:      "map/road.tmx",
 	StructurePlain:     "map/plain.tmx",
+	StationBusStop:     "map/busstop.tmx",
 }
 
 type Structure struct {
