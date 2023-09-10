@@ -103,12 +103,8 @@ func (g *game) Update() error {
 		}
 
 		// Load HUD sprites.
-
-		transparentBuilding := world.DrawMap(world.StructureCommercialHigh)
-		transparentImg := ebiten.NewImage(transparentBuilding.Bounds().Dx(), transparentBuilding.Bounds().Dy())
 		op := &ebiten.DrawImageOptions{}
 		op.ColorM.Scale(1, 1, 1, 0.4)
-		transparentImg.DrawImage(transparentBuilding, op)
 		world.HUDButtons = []*world.HUDButton{
 			{
 				StructureType: world.StructureBulldozer,
@@ -122,18 +118,6 @@ func (g *game) Update() error {
 				Sprite:        world.DrawMap(world.StructureRoad),
 				SpriteOffsetX: -12,
 				SpriteOffsetY: -28,
-			},
-			{
-				StructureType: world.StructurePowerPlantCoal,
-				SpriteOffsetX: -20,
-				SpriteOffsetY: 2,
-				Sprite:        world.DrawMap(world.StructurePowerPlantCoal),
-			},
-			{
-				StructureType: world.StructurePowerPlantSolar,
-				SpriteOffsetX: -20,
-				SpriteOffsetY: 2,
-				Sprite:        world.DrawMap(world.StructurePowerPlantSolar),
 			},
 			nil,
 			nil,

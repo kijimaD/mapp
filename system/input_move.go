@@ -41,15 +41,6 @@ func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY in
 	if err == nil || world.World.HoverStructure == world.StructureBulldozer {
 		world.World.LastBuildX, world.World.LastBuildY = tileX, tileY
 
-		if world.IsPowerPlant(world.World.HoverStructure) {
-			plant := &world.PowerPlant{
-				Type: world.World.HoverStructure,
-				X:    tileX,
-				Y:    tileY,
-			}
-			world.World.PowerPlants = append(world.World.PowerPlants, plant)
-		}
-
 		if err == nil {
 			world.World.Funds -= cost
 		}

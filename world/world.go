@@ -273,7 +273,7 @@ func DrawMap(structureType int) *ebiten.Image {
 }
 
 func LoadTileset() error {
-	m, err := LoadMap(StructureResidentialLow)
+	m, err := LoadMap(StructureRoad)
 	if err != nil {
 		return err
 	}
@@ -641,20 +641,14 @@ func SetHoverStructure(structureType int) {
 }
 
 var StructureTooltips = map[int]string{
-	StructureToggleHelp:      "Help",
-	StructureBulldozer:       "Bulldozer",
-	StructureRoad:            "Road",
-	StructurePoliceStation:   "Police station",
-	StructurePowerPlantCoal:  "Coal power plant",
-	StructurePowerPlantSolar: "Solar power plant",
+	StructureToggleHelp: "Help",
+	StructureBulldozer:  "Bulldozer",
+	StructureRoad:       "Road",
 }
 
 var StructureCosts = map[int]int{
-	StructureBulldozer:       5,
-	StructureRoad:            25,
-	StructurePoliceStation:   1000,
-	StructurePowerPlantCoal:  4000,
-	StructurePowerPlantSolar: 10000,
+	StructureBulldozer: 5,
+	StructureRoad:      25,
 }
 
 func Tooltip() string {
@@ -721,13 +715,4 @@ func ShowMessage(message string, duration int) {
 
 func ValidXY(x, y int) bool {
 	return x >= 0 && y >= 0 && x < 256 && y < 256
-}
-
-var PowerPlantCapacities = map[int]int{
-	StructurePowerPlantCoal:  60,
-	StructurePowerPlantSolar: 40,
-}
-
-func IsPowerPlant(structureType int) bool {
-	return structureType == StructurePowerPlantCoal || structureType == StructurePowerPlantSolar
 }
