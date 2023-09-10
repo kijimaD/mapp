@@ -34,13 +34,7 @@ const startingZoom = 1.0
 const SidebarWidth = 199
 const startingTax = 0.12
 
-var DirtTile = uint32(0)
-
-var (
-	GrassTile = uint32(11*32 + (0))
-	TreeTileA = uint32(5*32 + (24))
-	TreeTileB = uint32(5*32 + (25))
-)
+var GrassTile = uint32(0)
 
 type HUDButton struct {
 	Sprite                       *ebiten.Image
@@ -364,7 +358,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 			var img *ebiten.Image
 			if i == 0 {
-				img = World.TileImages[DirtTile+World.TileImagesFirstGID]
+				img = World.TileImages[GrassTile+World.TileImagesFirstGID]
 			}
 			if World.Level.Tiles[i][placeX][placeY].EnvironmentSprite != img {
 				World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
