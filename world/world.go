@@ -30,7 +30,7 @@ const (
 )
 const TileSize = 64
 const startingFunds = 100000
-const startingZoom = 1.0
+const startingZoom = 2.0
 const SidebarWidth = 199
 const startingTax = 0.12
 
@@ -45,7 +45,7 @@ type HUDButton struct {
 
 var HUDButtons []*HUDButton
 var CameraMinZoom = 0.1
-var CameraMaxZoom = 1.0
+var CameraMaxZoom = 10.0
 
 var World = &GameWorld{
 	CamScale:       startingZoom,
