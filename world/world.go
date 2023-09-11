@@ -7,9 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"path/filepath"
-	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"golang.org/x/text/language"
@@ -30,7 +28,7 @@ const (
 )
 const TileSize = 64
 const startingFunds = 100000
-const startingZoom = 1.0
+const startingZoom = 2.0
 const SidebarWidth = 199
 const startingTax = 0.12
 
@@ -45,7 +43,7 @@ type HUDButton struct {
 
 var HUDButtons []*HUDButton
 var CameraMinZoom = 0.1
-var CameraMaxZoom = 1.0
+var CameraMaxZoom = 10.0
 
 var World = &GameWorld{
 	CamScale:       startingZoom,
@@ -369,6 +367,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		}
 		if !internal {
 			checkSpaces := 2
+			// PowerPlantはいらないので消していいが、参考になりそうなので残しておく
 		REMOVEPOWER:
 			for i, plant := range World.PowerPlants {
 				for dx := 0; dx < checkSpaces; dx++ {
@@ -408,7 +407,10 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	// TODO Add entity
 
 	tileOccupied := func(tx int, ty int) bool {
-		return World.Level.Tiles[1][tx][ty].Sprite != nil || (World.Level.Tiles[0][tx][ty].Sprite != nil && (structureType != StructureRoad || World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
+		return World.Level.Tiles[1][tx][ty].Sprite != nil ||
+			(World.Level.Tiles[0][tx][ty].Sprite != nil &&
+				(structureType != StructureRoad ||
+					World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
 	}
 
 	valid := true
@@ -583,52 +585,6 @@ func AltButtonAt(x, y int) int {
 	return -1
 }
 
-func HandleRCIWindow(x, y int) bool {
-	if !World.ShowRCIWindow {
-		return false
-	}
-
-	point := image.Point{x, y}
-	if !point.In(World.RCIWindowRect) {
-		return false
-	}
-
-	if !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-		return true
-	}
-
-	var updated bool
-	barRectR := image.Rect(World.RCIWindowRect.Min.X+381, World.RCIWindowRect.Min.Y, World.RCIWindowRect.Min.X+575, World.RCIWindowRect.Min.Y+50)
-	barRectC := image.Rect(World.RCIWindowRect.Min.X+381, World.RCIWindowRect.Min.Y+50, World.RCIWindowRect.Min.X+575, World.RCIWindowRect.Min.Y+100)
-	barRectI := image.Rect(World.RCIWindowRect.Min.X+381, World.RCIWindowRect.Min.Y+100, World.RCIWindowRect.Min.X+575, World.RCIWindowRect.Max.Y)
-	if point.In(barRectR) {
-		World.TaxR = float64(x-barRectR.Min.X) / float64(barRectR.Dx())
-		if World.TaxR >= .99 {
-			World.TaxR = 1.0
-		}
-		World.HUDUpdated = true
-		updated = true
-	} else if point.In(barRectC) {
-		World.TaxC = float64(x-barRectC.Min.X) / float64(barRectC.Dx())
-		if World.TaxC >= .99 {
-			World.TaxC = 1.0
-		}
-		World.HUDUpdated = true
-		updated = true
-	} else if point.In(barRectI) {
-		World.TaxI = float64(x-barRectI.Min.X) / float64(barRectI.Dx())
-		if World.TaxI >= .99 {
-			World.TaxI = 1.0
-		}
-		World.HUDUpdated = true
-		updated = true
-	}
-	if !updated {
-		return true
-	}
-	return true
-}
-
 func SetHoverStructure(structureType int) {
 	World.HoverStructure = structureType
 	World.HUDUpdated = true
@@ -638,11 +594,13 @@ var StructureTooltips = map[int]string{
 	StructureToggleHelp: "Help",
 	StructureBulldozer:  "Bulldozer",
 	StructureRoad:       "Road",
+	StationBusStop:      "BusStop",
 }
 
 var StructureCosts = map[int]int{
 	StructureBulldozer: 5,
 	StructureRoad:      25,
+	StationBusStop:     50,
 }
 
 func Tooltip() string {
@@ -652,61 +610,4 @@ func Tooltip() string {
 		tooltipText += World.Printer.Sprintf("\n$%d", cost)
 	}
 	return tooltipText
-}
-
-var monthNames = []string{
-	"January",
-	"February",
-	"March",
-	"April",
-	"May",
-	"June",
-	"July",
-	"August",
-	"September",
-	"October",
-	"November",
-	"December",
-}
-
-func Date() (month string, year string) {
-	y, m := World.Ticks/YearTicks, (World.Ticks%YearTicks)/MonthTicks
-	return monthNames[m], strconv.Itoa(startingYear + y)
-}
-
-var messageLock = &sync.Mutex{}
-
-const messageDuration = 144 * 3
-
-func TickMessages() {
-	messageLock.Lock()
-	defer messageLock.Unlock()
-
-	var removed int
-	for j := 0; j < len(World.MessagesTicks); j++ {
-		i := j - removed
-		if World.MessagesTicks[i] == 0 {
-			World.Messages = append(World.Messages[:i], World.Messages[i+1:]...)
-			World.MessagesTicks = append(World.MessagesTicks[:i], World.MessagesTicks[i+1:]...)
-			removed++
-
-			World.HUDUpdated = true
-		} else if World.MessagesTicks[i] > 0 {
-			World.MessagesTicks[i]--
-		}
-	}
-}
-
-func ShowMessage(message string, duration int) {
-	messageLock.Lock()
-	defer messageLock.Unlock()
-
-	World.Messages = append(World.Messages, message)
-	World.MessagesTicks = append(World.MessagesTicks, duration)
-
-	World.HUDUpdated = true
-}
-
-func ValidXY(x, y int) bool {
-	return x >= 0 && y >= 0 && x < 256 && y < 256
 }

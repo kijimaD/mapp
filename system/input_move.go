@@ -201,7 +201,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			button := world.HUDButtonAt(x, y)
 			if button != nil {
-				if button.StructureType != 0 {
+				if button.StructureType != world.StructureToggleHelp {
 					if button.StructureType == world.StructureToggleHelp {
 						if world.World.HelpPage != -1 {
 							world.SetHelpPage(-1)
@@ -221,10 +221,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 				world.World.HUDUpdated = true
 			}
 		}
-		return nil
-	}
-
-	if world.HandleRCIWindow(x, y) {
 		return nil
 	}
 
