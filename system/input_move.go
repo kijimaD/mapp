@@ -224,10 +224,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
-	if world.HandleRCIWindow(x, y) {
-		return nil
-	}
-
 	if x >= world.World.ScreenW-helpW && y >= world.World.ScreenH-helpH {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			const (
