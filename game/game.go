@@ -108,7 +108,12 @@ func (g *game) Update() error {
 				SpriteOffsetX: 16,
 				SpriteOffsetY: -50,
 			},
-			nil,
+			{
+				StructureType: world.StationBusStop,
+				Sprite:        world.DrawMap(world.StationBusStop),
+				SpriteOffsetX: 16,
+				SpriteOffsetY: -50,
+			},
 			nil,
 			nil,
 			nil,

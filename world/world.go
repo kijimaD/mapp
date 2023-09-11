@@ -408,7 +408,10 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	// TODO Add entity
 
 	tileOccupied := func(tx int, ty int) bool {
-		return World.Level.Tiles[1][tx][ty].Sprite != nil || (World.Level.Tiles[0][tx][ty].Sprite != nil && (structureType != StructureRoad || World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
+		return World.Level.Tiles[1][tx][ty].Sprite != nil ||
+			(World.Level.Tiles[0][tx][ty].Sprite != nil &&
+				(structureType != StructureRoad ||
+					World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
 	}
 
 	valid := true
@@ -638,11 +641,13 @@ var StructureTooltips = map[int]string{
 	StructureToggleHelp: "Help",
 	StructureBulldozer:  "Bulldozer",
 	StructureRoad:       "Road",
+	StationBusStop:      "BusStop",
 }
 
 var StructureCosts = map[int]int{
 	StructureBulldozer: 5,
 	StructureRoad:      25,
+	StationBusStop:     50,
 }
 
 func Tooltip() string {
