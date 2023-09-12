@@ -3,12 +3,11 @@ package system
 import (
 	"fmt"
 	"image/color"
-	_ "image/png"
 
-	"github.com/kijimaD/mapp/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/kijimaD/mapp/world"
 )
 
 type RenderDebugTextSystem struct {
@@ -23,7 +22,6 @@ func NewRenderDebugTextSystem(player gohan.Entity) *RenderDebugTextSystem {
 		op:       &ebiten.DrawImageOptions{},
 		debugImg: ebiten.NewImage(70, 98),
 	}
-
 	return s
 }
 
@@ -35,7 +33,6 @@ func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error
 	if world.World.Debug <= 0 {
 		return nil
 	}
-
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})
 	ebitenutil.DebugPrintAt(s.debugImg, fmt.Sprintf("ENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f", world.World.EnvironmentSprites, gohan.CurrentEntities(), gohan.CurrentUpdates(), gohan.CurrentDraws(), ebiten.CurrentTPS(), ebiten.CurrentFPS()), 2, 0)
 	op := &ebiten.DrawImageOptions{}

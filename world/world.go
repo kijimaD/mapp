@@ -61,10 +61,6 @@ var World = &GameWorld{
 	Power:     newPowerMap(),
 	PowerOuts: newPowerOuts(),
 
-	TaxR: startingTax,
-	TaxC: startingTax,
-	TaxI: startingTax,
-
 	BuildDragX: -1,
 	BuildDragY: -1,
 	LastBuildX: -1,

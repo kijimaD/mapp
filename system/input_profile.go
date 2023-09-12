@@ -23,7 +23,7 @@ func NewProfileSystem(player gohan.Entity) *profileSystem {
 }
 
 func (s *profileSystem) Update(_ gohan.Entity) error {
-	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyP) {
+	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		if s.cpuProfile == nil {
 			runtime.SetCPUProfileRate(1000)
 
@@ -46,7 +46,6 @@ func (s *profileSystem) Update(_ gohan.Entity) error {
 
 			s.cpuProfile.Close()
 			s.cpuProfile = nil
-
 		}
 	}
 	return nil

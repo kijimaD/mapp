@@ -24,7 +24,6 @@ type game struct {
 	debugMode      bool
 	cpuProfile     *os.File
 	movementSystem *system.MovementSystem
-	renderSystem   *system.RenderSystem
 	addedSystems   bool
 	updateTicks    int
 	sync.Mutex
@@ -161,7 +160,20 @@ func (g *game) Update() error {
 }
 
 // renderSprite renders a sprite on the screen.
-func (g *game) renderSprite(x float64, y float64, offsetx float64, offsety float64, angle float64, geoScale float64, colorScale float64, alpha float64, hFlip bool, vFlip bool, sprite *ebiten.Image, target *ebiten.Image) int {
+func (g *game) renderSprite(
+	x float64,
+	y float64,
+	offsetx float64,
+	offsety float64,
+	angle float64,
+	geoScale float64,
+	colorScale float64,
+	alpha float64,
+	hFlip bool,
+	vFlip bool,
+	sprite *ebiten.Image,
+	target *ebiten.Image,
+) int {
 	if alpha < .01 {
 		return 0
 	}
@@ -257,8 +269,6 @@ func (g *game) addSystems() {
 
 	// Render systems.
 	gohan.AddSystem(system.NewCameraSystem())
-	g.renderSystem = system.NewRenderSystem()
-	gohan.AddSystem(g.renderSystem)
 	gohan.AddSystem(system.NewRenderHudSystem())
 	gohan.AddSystem(system.NewRenderDebugTextSystem(world.World.Player))
 	gohan.AddSystem(system.NewProfileSystem(world.World.Player))

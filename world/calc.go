@@ -6,6 +6,8 @@ import (
 	"github.com/lafriks/go-tiled"
 )
 
+// 直交座標(cartesian)から等角投影座標(isometric)
+
 func ValidXY(x, y int) bool {
 	return x >= 0 && y >= 0 && x < 256 && y < 256
 }
