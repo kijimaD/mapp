@@ -1,15 +1,15 @@
 package world
 
-import (
-	"github.com/beefsack/go-astar"
-)
+import "github.com/beefsack/go-astar"
 
+// 電力を運んでいるタイル
 type PowerMapTile struct {
 	X            int
 	Y            int
 	CarriesPower bool // Set to true for roads and all building tiles (even power plants)
 }
 
+// そのタイルの上下左右が伝送路であればその、タイルを返す
 func (t *PowerMapTile) Up() *PowerMapTile {
 	tx, ty := t.X, t.Y-1
 	if !ValidXY(tx, ty) {
@@ -58,6 +58,49 @@ func (t *PowerMapTile) Right() *PowerMapTile {
 	return n
 }
 
+func (t *PowerMapTile) PathNeighbors() []astar.Pather {
+	var neighbors []astar.Pather
+	n := t.Up()
+	if n != nil {
+		neighbors = append(neighbors, n)
+	}
+	n = t.Down()
+	if n != nil {
+		neighbors = append(neighbors, n)
+	}
+	n = t.Left()
+	if n != nil {
+		neighbors = append(neighbors, n)
+	}
+	n = t.Right()
+	if n != nil {
+		neighbors = append(neighbors, n)
+	}
+	return neighbors
+}
+
+func (t *PowerMapTile) PathNeighborCost(to astar.Pather) float64 {
+	toT := to.(*PowerMapTile)
+	if !toT.CarriesPower {
+		return 0
+	}
+	return 1
+}
+
+func (t *PowerMapTile) PathEstimatedCost(to astar.Pather) float64 {
+	toT := to.(*PowerMapTile)
+	absX := toT.X - t.X
+	if absX < 0 {
+		absX = -absX
+	}
+	absY := toT.Y - t.Y
+	if absY < 0 {
+		absY = -absY
+	}
+	return float64(absX + absY)
+}
+
+// mapはx, yのtileで構成される
 type PowerMap [][]*PowerMapTile
 
 func newPowerMap() PowerMap {
@@ -106,46 +149,4 @@ func (m PowerMap) SetTile(x, y int, carriesPower bool) {
 	t.CarriesPower = carriesPower
 
 	World.PowerUpdated = true
-}
-
-func (t *PowerMapTile) PathNeighbors() []astar.Pather {
-	var neighbors []astar.Pather
-	n := t.Up()
-	if n != nil {
-		neighbors = append(neighbors, n)
-	}
-	n = t.Down()
-	if n != nil {
-		neighbors = append(neighbors, n)
-	}
-	n = t.Left()
-	if n != nil {
-		neighbors = append(neighbors, n)
-	}
-	n = t.Right()
-	if n != nil {
-		neighbors = append(neighbors, n)
-	}
-	return neighbors
-}
-
-func (t *PowerMapTile) PathNeighborCost(to astar.Pather) float64 {
-	toT := to.(*PowerMapTile)
-	if !toT.CarriesPower {
-		return 0
-	}
-	return 1
-}
-
-func (t *PowerMapTile) PathEstimatedCost(to astar.Pather) float64 {
-	toT := to.(*PowerMapTile)
-	absX := toT.X - t.X
-	if absX < 0 {
-		absX = -absX
-	}
-	absY := toT.Y - t.Y
-	if absY < 0 {
-		absY = -absY
-	}
-	return float64(absX + absY)
 }

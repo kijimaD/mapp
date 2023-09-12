@@ -10,11 +10,27 @@ const (
 	StationBusStop
 )
 
+// タイルへのファイルパス
 var StructureFilePaths = map[int]string{
 	StructureBulldozer: "map/bulldozer.tmx",
 	StructureRoad:      "map/road.tmx",
 	StructurePlain:     "map/plain.tmx",
 	StationBusStop:     "map/busstop.tmx",
+}
+
+// ツールチップの文字列
+var StructureTooltips = map[int]string{
+	StructureToggleHelp: "Help",
+	StructureBulldozer:  "Bulldozer",
+	StructureRoad:       "Road",
+	StationBusStop:      "BusStop",
+}
+
+// コスト
+var StructureCosts = map[int]int{
+	StructureBulldozer: 5,
+	StructureRoad:      25,
+	StationBusStop:     50,
 }
 
 type Structure struct {

@@ -1,3 +1,4 @@
+// 世界
 package world
 
 import (
@@ -32,8 +33,6 @@ const startingZoom = 2.0
 const SidebarWidth = 199
 const startingTax = 0.12
 
-var GrassTile = uint32(0)
-
 type HUDButton struct {
 	Sprite                       *ebiten.Image
 	SpriteOffsetX, SpriteOffsetY float64
@@ -41,9 +40,11 @@ type HUDButton struct {
 	StructureType                int
 }
 
+var ErrNothingToBulldoze = errors.New("nothing to bulldoze")
 var HUDButtons []*HUDButton
 var CameraMinZoom = 0.1
 var CameraMaxZoom = 10.0
+var GrassTile = uint32(0)
 
 var World = &GameWorld{
 	CamScale:       startingZoom,
@@ -76,115 +77,6 @@ type PowerPlant struct {
 	Type int
 	X, Y int
 }
-
-type GameWorld struct {
-	Level *GameLevel
-
-	Player gohan.Entity
-
-	ScreenW, ScreenH int
-
-	DisableEsc bool
-
-	Debug  int
-	NoClip bool
-
-	GameStarted      bool
-	GameStartedTicks int
-	GameOver         bool
-
-	PlayerX, PlayerY float64
-
-	CamX, CamY     float64
-	CamScale       float64
-	CamScaleTarget float64
-	CamMoving      bool
-
-	PlayerWidth  float64
-	PlayerHeight float64
-
-	HoverStructure         int
-	HoverX, HoverY         int
-	HoverLastX, HoverLastY int
-	HoverValid             bool
-
-	Map             *tiled.Map
-	ObjectGroups    []*tiled.ObjectGroup
-	HazardRects     []image.Rectangle
-	CreepRects      []image.Rectangle
-	CreepEntities   []gohan.Entity
-	TriggerEntities []gohan.Entity
-	TriggerRects    []image.Rectangle
-	TriggerNames    []string
-
-	NativeResolution bool
-
-	BrokenPieceA, BrokenPieceB gohan.Entity
-
-	TileImages         map[uint32]*ebiten.Image
-	TileImagesFirstGID uint32
-
-	ResetGame bool
-
-	MuteMusic        bool
-	MuteSoundEffects bool // TODO
-
-	GotCursorPosition bool
-
-	tilesets []*ebiten.Image
-
-	EnvironmentSprites int
-
-	SelectedStructure *Structure
-
-	HUDUpdated     bool
-	HUDButtonRects []image.Rectangle
-
-	RCIButtonRect image.Rectangle
-	RCIWindowRect image.Rectangle
-	ShowRCIWindow bool
-
-	HelpUpdated     bool
-	HelpPage        int
-	HelpButtonRects []image.Rectangle
-
-	PowerPlants []*PowerPlant
-
-	HavePowerOut bool
-	PowerOuts    [][]bool
-
-	Ticks int
-
-	Paused bool
-
-	Funds int
-
-	Printer *message.Printer
-
-	TransparentStructures bool
-
-	Messages      []string
-	MessagesTicks []int
-
-	Power          PowerMap
-	PowerUpdated   bool
-	PowerAvailable int
-	PowerNeeded    int
-
-	BuildDragX int
-	BuildDragY int
-
-	LastBuildX int
-	LastBuildY int
-
-	TaxR float64
-	TaxC float64
-	TaxI float64
-
-	resetTipShown bool
-}
-
-var ErrNothingToBulldoze = errors.New("nothing to bulldoze")
 
 func Reset() {
 	for _, e := range gohan.AllEntities() {
@@ -506,24 +398,6 @@ VALIDBUILD:
 	return structure, nil
 }
 
-func ObjectToRect(o *tiled.Object) image.Rectangle {
-	x, y, w, h := int(o.X), int(o.Y), int(o.Width), int(o.Height)
-	y -= 32
-	return image.Rect(x, y, x+w, y+h)
-}
-
-func LevelCoordinatesToScreen(x, y float64) (float64, float64) {
-	return (x - World.CamX) * World.CamScale, (y - World.CamY) * World.CamScale
-}
-
-func (w *GameWorld) SetGameOver(vx, vy float64) {
-	if w.GameOver {
-		return
-	}
-
-	w.GameOver = true
-}
-
 func StartGame() {
 	if World.GameStarted {
 		return
@@ -532,39 +406,6 @@ func StartGame() {
 
 	// Show initial help page.
 	SetHelpPage(0)
-}
-
-// CartesianToIso transforms cartesian coordinates into isometric coordinates.
-func CartesianToIso(x, y float64) (float64, float64) {
-	ix := (x - y) * float64(TileSize/2)
-	iy := (x + y) * float64(TileSize/4)
-	return ix, iy
-}
-
-// CartesianToIso transforms cartesian coordinates into isometric coordinates.
-func IsoToCartesian(x, y float64) (float64, float64) {
-	cx := (x/float64(TileSize/2) + y/float64(TileSize/4)) / 2
-	cy := (y/float64(TileSize/4) - (x / float64(TileSize/2))) / 2
-	cx-- // TODO Why is this necessary?
-	return cx, cy
-}
-
-func IsoToScreen(x, y float64) (float64, float64) {
-	cx, cy := float64(World.ScreenW/2), float64(World.ScreenH/2)
-	return ((x - World.CamX) * World.CamScale) + cx, ((y - World.CamY) * World.CamScale) + cy
-}
-
-func ScreenToIso(x, y int) (float64, float64) {
-	// Offset cursor to first above ground layer.
-	y += int(float64(16) * World.CamScale)
-
-	cx, cy := float64(World.ScreenW/2), float64(World.ScreenH/2)
-	return ((float64(x) - cx) / World.CamScale) + World.CamX, ((float64(y) - cy) / World.CamScale) + World.CamY
-}
-
-func ScreenToCartesian(x, y int) (float64, float64) {
-	xi, yi := ScreenToIso(x, y)
-	return IsoToCartesian(xi, yi)
 }
 
 func HUDButtonAt(x, y int) *HUDButton {
@@ -588,19 +429,6 @@ func AltButtonAt(x, y int) int {
 func SetHoverStructure(structureType int) {
 	World.HoverStructure = structureType
 	World.HUDUpdated = true
-}
-
-var StructureTooltips = map[int]string{
-	StructureToggleHelp: "Help",
-	StructureBulldozer:  "Bulldozer",
-	StructureRoad:       "Road",
-	StationBusStop:      "BusStop",
-}
-
-var StructureCosts = map[int]int{
-	StructureBulldozer: 5,
-	StructureRoad:      25,
-	StationBusStop:     50,
 }
 
 func Tooltip() string {
