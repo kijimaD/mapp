@@ -32,21 +32,25 @@ func (s *RenderDebugTextSystem) Update(_ gohan.Entity) error {
 }
 
 func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
-	// TODO: カメラの位置、タイルの位置を表示したい
-
 	if world.World.Debug <= 0 {
 		return nil
 	}
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})
+	mouseX, mouseY := ebiten.CursorPosition()
+	tileX, tileY := world.ScreenToCartesian(mouseX, mouseY)
 	ebitenutil.DebugPrintAt(
 		s.debugImg,
-		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\n",
+		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\nMouse(%d,%d)\nTile(%.0f,%.0f)\n",
 			world.World.EnvironmentSprites,
 			gohan.CurrentEntities(),
 			gohan.CurrentUpdates(),
 			gohan.CurrentDraws(),
 			ebiten.CurrentTPS(),
 			ebiten.CurrentFPS(),
+			mouseX,
+			mouseY,
+			tileX,
+			tileY,
 		),
 		0,
 		0,
