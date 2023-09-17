@@ -67,6 +67,7 @@ var World = &GameWorld{
 	LastBuildY: -1,
 
 	Printer: message.NewPrinter(language.English),
+	Debug:   1,
 }
 
 type PowerPlant struct {

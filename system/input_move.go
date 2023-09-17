@@ -72,11 +72,9 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
+	// デバッグモード
+	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
 		v := 1
-		if ebiten.IsKeyPressed(ebiten.KeyShift) {
-			v = 2
-		}
 		if world.World.Debug == v {
 			world.World.Debug = 0
 		} else {
@@ -84,6 +82,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		}
 		return nil
 	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyN) {
 		world.World.NoClip = !world.World.NoClip
 		return nil

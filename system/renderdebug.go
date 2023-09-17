@@ -10,6 +10,8 @@ import (
 	"github.com/kijimaD/mapp/world"
 )
 
+// デバッグテキストは左下に出る項目のこと
+
 type RenderDebugTextSystem struct {
 	player   gohan.Entity
 	op       *ebiten.DrawImageOptions
@@ -20,7 +22,7 @@ func NewRenderDebugTextSystem(player gohan.Entity) *RenderDebugTextSystem {
 	s := &RenderDebugTextSystem{
 		player:   player,
 		op:       &ebiten.DrawImageOptions{},
-		debugImg: ebiten.NewImage(70, 98),
+		debugImg: ebiten.NewImage(100, 200),
 	}
 	return s
 }
@@ -30,14 +32,28 @@ func (s *RenderDebugTextSystem) Update(_ gohan.Entity) error {
 }
 
 func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
+	// TODO: カメラの位置、タイルの位置を表示したい
+
 	if world.World.Debug <= 0 {
 		return nil
 	}
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})
-	ebitenutil.DebugPrintAt(s.debugImg, fmt.Sprintf("ENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f", world.World.EnvironmentSprites, gohan.CurrentEntities(), gohan.CurrentUpdates(), gohan.CurrentDraws(), ebiten.CurrentTPS(), ebiten.CurrentFPS()), 2, 0)
+	ebitenutil.DebugPrintAt(
+		s.debugImg,
+		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\n",
+			world.World.EnvironmentSprites,
+			gohan.CurrentEntities(),
+			gohan.CurrentUpdates(),
+			gohan.CurrentDraws(),
+			ebiten.CurrentTPS(),
+			ebiten.CurrentFPS(),
+		),
+		0,
+		0,
+	)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(2, 2)
-	op.GeoM.Translate(world.SidebarWidth, 0)
+	op.GeoM.Translate(0, 800)
 	screen.DrawImage(s.debugImg, op)
 	return nil
 }

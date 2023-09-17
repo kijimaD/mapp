@@ -26,7 +26,7 @@ var StructureTooltips = map[int]string{
 	StationBusStop:      "BusStop",
 }
 
-// コスト
+// 実行に必要な額
 var StructureCosts = map[int]int{
 	StructureBulldozer: 5,
 	StructureRoad:      25,

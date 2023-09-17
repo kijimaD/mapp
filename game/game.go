@@ -32,7 +32,8 @@ type game struct {
 // NewGame returns a new isometric demo game.
 func NewGame() (*game, error) {
 	g := &game{
-		op: &ebiten.DrawImageOptions{},
+		op:        &ebiten.DrawImageOptions{},
+		debugMode: true,
 	}
 
 	err := g.loadAssets()
