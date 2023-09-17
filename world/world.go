@@ -97,7 +97,7 @@ func Reset() {
 	World.CamY = float64((32 * TileSize) + rand.Intn(32*TileSize))
 }
 
-func LoadMap(structureType int) (*tiled.Map, error) {
+func loadMap(structureType int) (*tiled.Map, error) {
 	filePath := StructureFilePaths[structureType]
 	if filePath == "" {
 		panic(fmt.Sprintf("unknown structure %d", structureType))
@@ -115,7 +115,7 @@ func LoadMap(structureType int) (*tiled.Map, error) {
 func DrawMap(structureType int) *ebiten.Image {
 	img := ebiten.NewImage(128, 128)
 
-	m, err := LoadMap(structureType)
+	m, err := loadMap(structureType)
 	if err != nil {
 		panic(err)
 	}
@@ -154,7 +154,7 @@ func DrawMap(structureType int) *ebiten.Image {
 }
 
 func LoadTileset() error {
-	m, err := LoadMap(StructureRoad)
+	m, err := loadMap(StructureRoad)
 	if err != nil {
 		return err
 	}
@@ -207,7 +207,7 @@ func bulldozeArea(x int, y int, size int) {
 }
 
 func BuildStructure(structureType int, hover bool, placeX int, placeY int, internal bool) (*Structure, error) {
-	m, err := LoadMap(structureType)
+	m, err := loadMap(structureType)
 	if err != nil {
 		return nil, err
 	}
