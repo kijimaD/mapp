@@ -10,6 +10,7 @@ type Tile struct {
 	HoverSprite       *ebiten.Image
 }
 
+// levelは高さのことっぽい
 type GameLevel struct {
 	Tiles [][][]*Tile
 
@@ -27,6 +28,7 @@ func NewLevel(size int) *GameLevel {
 	return l
 }
 
+// 平面にタイルを敷き詰めた配列を作る
 func (l *GameLevel) AddLayer() {
 	tileMap := make([][]*Tile, l.size)
 	for x := 0; x < l.size; x++ {
@@ -38,6 +40,7 @@ func (l *GameLevel) AddLayer() {
 	l.Tiles = append(l.Tiles, tileMap)
 }
 
+// タイル全体のHoverSpriteフラグをオフにする
 func (l *GameLevel) ClearHoverSprites() {
 	for i := range l.Tiles {
 		for x := range l.Tiles[i] {

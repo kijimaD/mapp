@@ -95,8 +95,8 @@ type GameWorld struct {
 
 	TransparentStructures bool
 
-	Messages      []string
-	MessagesTicks []int
+	Messages      []string // 右上に一時的に表示するメッセージ。MessagesとMessagesTicksのスライスの数は対応している
+	MessagesTicks []int    // 右上に一時的に表示するメッセージの残り秒
 
 	Power          PowerMap
 	PowerUpdated   bool

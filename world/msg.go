@@ -1,23 +1,28 @@
 package world
 
-import "sync"
+import (
+	"sync"
+)
 
 var messageLock = &sync.Mutex{}
 
-const messageDuration = 144 * 3
-
+// メッセージは、建設時などに右上に一時的に出るメッセージのこと
 func TickMessages() {
 	messageLock.Lock()
 	defer messageLock.Unlock()
 
 	var removed int
 	for j := 0; j < len(World.MessagesTicks); j++ {
-		i := j - removed
+		i := j - removed // 削除された分短くなるのを考慮する
+
+		// Ticksの中身が0になったものは、MessagesとMessagesTicksから削除していく。0以上の場合はデクリメントする
 		if World.MessagesTicks[i] == 0 {
+			// 前を削除
+			// [古1, 古2, 新1, 新2]
+			// [古2, 新1, 新2]
 			World.Messages = append(World.Messages[:i], World.Messages[i+1:]...)
 			World.MessagesTicks = append(World.MessagesTicks[:i], World.MessagesTicks[i+1:]...)
 			removed++
-
 			World.HUDUpdated = true
 		} else if World.MessagesTicks[i] > 0 {
 			World.MessagesTicks[i]--

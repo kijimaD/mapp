@@ -2,14 +2,16 @@ package world
 
 import "github.com/beefsack/go-astar"
 
+// 電力がないのでこの箇所は必要ないが、後で参考になりそうなので残す
 // 電力を運んでいるタイル
+
 type PowerMapTile struct {
 	X            int
 	Y            int
 	CarriesPower bool // Set to true for roads and all building tiles (even power plants)
 }
 
-// そのタイルの上下左右が伝送路であればその、タイルを返す
+// そのタイルの上下左右が伝送路であればそのタイルを返す
 func (t *PowerMapTile) Up() *PowerMapTile {
 	tx, ty := t.X, t.Y-1
 	if !ValidXY(tx, ty) {
@@ -58,6 +60,8 @@ func (t *PowerMapTile) Right() *PowerMapTile {
 	return n
 }
 
+// aster.Patherのinterface構成関数のひとつ
+// 近隣にあるタイルを返す
 func (t *PowerMapTile) PathNeighbors() []astar.Pather {
 	var neighbors []astar.Pather
 	n := t.Up()
@@ -79,6 +83,8 @@ func (t *PowerMapTile) PathNeighbors() []astar.Pather {
 	return neighbors
 }
 
+// aster.Patherのinterface構成関数のひとつ
+// 経路地への1つの移動あたりのコスト計算。電気が運べるならコストは0
 func (t *PowerMapTile) PathNeighborCost(to astar.Pather) float64 {
 	toT := to.(*PowerMapTile)
 	if !toT.CarriesPower {
@@ -87,9 +93,11 @@ func (t *PowerMapTile) PathNeighborCost(to astar.Pather) float64 {
 	return 1
 }
 
+// aster.Patherのinterface構成関数のひとつ
+// xとyの絶対値。移動距離がわかりそうなのだが、なぜこれを返すのかよくわからない
 func (t *PowerMapTile) PathEstimatedCost(to astar.Pather) float64 {
 	toT := to.(*PowerMapTile)
-	absX := toT.X - t.X
+	absX := toT.X - t.X // 先 - 元
 	if absX < 0 {
 		absX = -absX
 	}
@@ -98,55 +106,4 @@ func (t *PowerMapTile) PathEstimatedCost(to astar.Pather) float64 {
 		absY = -absY
 	}
 	return float64(absX + absY)
-}
-
-// mapはx, yのtileで構成される
-type PowerMap [][]*PowerMapTile
-
-func newPowerMap() PowerMap {
-	m := make(PowerMap, 256)
-	for x := 0; x < 256; x++ {
-		m[x] = make([]*PowerMapTile, 256)
-		for y := 0; y < 256; y++ {
-			m[x][y] = &PowerMapTile{
-				X: x,
-				Y: y,
-			}
-		}
-	}
-	return m
-}
-
-func newPowerOuts() [][]bool {
-	m := make([][]bool, 256)
-	for x := 0; x < 256; x++ {
-		m[x] = make([]bool, 256)
-	}
-	return m
-}
-
-func ResetPowerOuts() {
-	for x := 0; x < 256; x++ {
-		for y := 0; y < 256; y++ {
-			World.PowerOuts[x][y] = false
-		}
-	}
-	World.HavePowerOut = false
-}
-
-func (m PowerMap) GetTile(x, y int) *PowerMapTile {
-	if !ValidXY(x, y) {
-		return nil
-	}
-	return m[x][y]
-}
-
-func (m PowerMap) SetTile(x, y int, carriesPower bool) {
-	t := m[x][y]
-	if t.CarriesPower == carriesPower {
-		return
-	}
-	t.CarriesPower = carriesPower
-
-	World.PowerUpdated = true
 }
