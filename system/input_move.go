@@ -74,12 +74,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 
 	// デバッグモード
 	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
-		v := 1
-		if world.World.Debug == v {
-			world.World.Debug = 0
-		} else {
-			world.World.Debug = v
-		}
+		world.World.IsDebug = !world.World.IsDebug
 		return nil
 	}
 

@@ -32,7 +32,7 @@ func (s *RenderDebugTextSystem) Update(_ gohan.Entity) error {
 }
 
 func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
-	if world.World.Debug <= 0 {
+	if world.World.IsDebug == false {
 		return nil
 	}
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})

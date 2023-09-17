@@ -18,8 +18,8 @@ type GameWorld struct {
 
 	DisableEsc bool
 
-	Debug  int
-	NoClip bool
+	IsDebug bool
+	NoClip  bool
 
 	GameStarted      bool
 	GameStartedTicks int
