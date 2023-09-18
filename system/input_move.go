@@ -72,18 +72,12 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
-		v := 1
-		if ebiten.IsKeyPressed(ebiten.KeyShift) {
-			v = 2
-		}
-		if world.World.Debug == v {
-			world.World.Debug = 0
-		} else {
-			world.World.Debug = v
-		}
+	// デバッグモード
+	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
+		world.World.IsDebug = !world.World.IsDebug
 		return nil
 	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyN) {
 		world.World.NoClip = !world.World.NoClip
 		return nil
@@ -194,26 +188,25 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		world.World.CamY = maxCam
 	}
 
+	// サイドバー
 	if x < world.SidebarWidth {
 		world.World.Level.ClearHoverSprites()
-
 		world.World.HoverX, world.World.HoverY = 0, 0
+
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			button := world.HUDButtonAt(x, y)
 			if button != nil {
-				if button.StructureType != world.StructureToggleHelp {
-					if button.StructureType == world.StructureToggleHelp {
-						if world.World.HelpPage != -1 {
-							world.SetHelpPage(-1)
-						} else {
-							world.SetHelpPage(0)
-						}
+				if button.StructureType == world.StructureToggleHelp {
+					if world.World.HelpPage != -1 {
+						world.SetHelpPage(-1) // 閉じる
 					} else {
-						if world.World.HoverStructure == button.StructureType {
-							world.SetHoverStructure(0) // Deselect.
-						} else {
-							world.SetHoverStructure(button.StructureType)
-						}
+						world.SetHelpPage(0) // 開く
+					}
+				} else {
+					if world.World.HoverStructure == button.StructureType {
+						world.SetHoverStructure(0) // Deselect.
+					} else {
+						world.SetHoverStructure(button.StructureType)
 					}
 				}
 			} else if world.AltButtonAt(x, y) == 0 {
@@ -224,6 +217,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
+	// ヘルプページ
 	if x >= world.World.ScreenW-helpW && y >= world.World.ScreenH-helpH {
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			const (
