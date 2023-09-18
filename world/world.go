@@ -136,14 +136,12 @@ func DrawMap(structureType int) *ebiten.Image {
 
 				xi, yi := CartesianToIso(float64(x), float64(y))
 
-				scale := 0.9 / float64(m.Width)
-				if m.Width < 2 {
-					scale = 0.6
-				}
-
+				scale := 1.0 / float64(m.Width)
 				paddingX := 64.0
 				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(xi+(paddingX*(float64(m.Width)-1)), (yi+float64(i*-40))+92)
+				op.GeoM.Translate(
+					xi+(paddingX*(float64(m.Width)-1)),
+					(yi+float64(i*-40))+50)
 				op.GeoM.Scale(scale, scale)
 				img.DrawImage(tileImg, op)
 			}
