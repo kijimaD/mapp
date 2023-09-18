@@ -1,0 +1,29 @@
+{
+  "name": "mapp",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kijimaD/mapp.git"
+  },
+  "main": "index.js",
+  "author": "Kijima Daigo",
+  "private": true,
+  "license": "GPLv3",
+  "devDependencies": {
+    "semantic-release": "^22.0.0",
+    "semantic-release-cli": "^5.4.4"
+  },
+  "release": {
+    "branches": [
+      "main",
+    ]
+  },
+  "plugins": [
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ]
+  ]
+}
