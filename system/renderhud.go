@@ -171,7 +171,7 @@ func (s *RenderHudSystem) drawButtonBorder(img *ebiten.Image, r image.Rectangle,
 }
 
 func (s *RenderHudSystem) drawTooltip() {
-	label := world.Tooltip()
+	label := world.TooltipText()
 	if label == "" {
 		return
 	}

@@ -401,10 +401,11 @@ func StartGame() {
 	}
 	World.GameStarted = true
 
-	// Show initial help page.
-	SetHelpPage(0)
+	// ヘルプページ非表示
+	SetHelpPage(-1)
 }
 
+// 指定座標に該当するボタンを返す
 func HUDButtonAt(x, y int) *HUDButton {
 	point := image.Point{x, y}
 	for i, rect := range World.HUDButtonRects {
@@ -423,12 +424,14 @@ func AltButtonAt(x, y int) int {
 	return -1
 }
 
+// 建設を選択中
 func SetHoverStructure(structureType int) {
 	World.HoverStructure = structureType
 	World.HUDUpdated = true
 }
 
-func Tooltip() string {
+// 選択中の建物のツールチップテキストを取得する
+func TooltipText() string {
 	tooltipText := StructureTooltips[World.HoverStructure]
 	cost := StructureCosts[World.HoverStructure]
 	if cost > 0 {
