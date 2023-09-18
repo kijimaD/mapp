@@ -1,6 +1,8 @@
 package world
 
 import (
+	"image"
+	"strings"
 	"sync"
 )
 
@@ -38,4 +40,47 @@ func ShowMessage(message string, duration int) {
 	World.MessagesTicks = append(World.MessagesTicks, duration)
 
 	World.HUDUpdated = true
+}
+
+func ShowBuildCost(structureType int, cost int) {
+	if structureType == StructureBulldozer {
+		ShowMessage(World.Printer.Sprintf("Bulldozed area (-$%d)", cost), 3)
+	} else {
+		ShowMessage(World.Printer.Sprintf("Built %s (-$%d)", strings.ToLower(StructureTooltips[World.HoverStructure]), cost), 3)
+	}
+}
+
+// 指定座標に該当するボタンを返す
+func HUDButtonAt(x, y int) *HUDButton {
+	point := image.Point{x, y}
+	for i, rect := range World.HUDButtonRects {
+		if point.In(rect) {
+			return HUDButtons[i]
+		}
+	}
+	return nil
+}
+
+func AltButtonAt(x, y int) int {
+	point := image.Point{x, y}
+	if point.In(World.RCIButtonRect) {
+		return 0
+	}
+	return -1
+}
+
+// 建設を選択中
+func SetHoverStructure(structureType int) {
+	World.HoverStructure = structureType
+	World.HUDUpdated = true
+}
+
+// 選択中の建物のツールチップテキストを取得する
+func TooltipText() string {
+	tooltipText := StructureTooltips[World.HoverStructure]
+	cost := StructureCosts[World.HoverStructure]
+	if cost > 0 {
+		tooltipText += World.Printer.Sprintf("\n$%d", cost)
+	}
+	return tooltipText
 }
