@@ -198,8 +198,11 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		return nil, err
 	}
 
+	// TODO: w, hは1, 1とかが入る。何かわからない
 	w := m.Width
 	h := m.Height
+
+	// 後の工程で(placeX-w, placeY-h), (placeX, placeY) を使う。これらが負の値になるとindexエラーになるのでチェックする
 	if !ValidXY(placeX-w, placeY-h) || !ValidXY(placeX, placeY) {
 		return nil, ErrInvalidBuildingNotFit
 	}
@@ -210,6 +213,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		Y:    placeY,
 	}
 
+	// ブルドーザーを選択中に押すと削除する
 	if structureType == StructureBulldozer && !hover {
 		// TODO bulldoze entire structure, remove from zones
 		var bulldozed bool
@@ -225,7 +229,6 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 				// 最下層はデフォルトタイルにする
 				img = World.TileImages[GrassTile+World.TileImagesFirstGID]
 			}
-			// デフォルトタイルでないときのみ上書きする
 			World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
 		}
 		if !bulldozed {
@@ -251,7 +254,6 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		return mapTile
 	}
 	_ = createTileEntity
-
 	// TODO Add entity
 
 	tileOccupied := func(tx int, ty int) bool {
@@ -297,18 +299,19 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		for y := 0; y < m.Height; y++ {
 			for x := 0; x < m.Width; x++ {
 				t = layer.Tiles[y*m.Width+x]
-				if t == nil || t.Nil {
+				if t == nil {
 					continue // No tile at this position.
 				}
 
 				tileImg := World.TileImages[t.Tileset.FirstGID+t.ID]
 				if tileImg == nil {
-					continue
+					return nil, ErrTileImageNotFound
 				}
 
 				// 道路以外の建設物はベースタイル(階層0)の上に存在する
-				// TODO: 道路も自然タイルの上に置きたい
-				layerNum := i
+				// TODO: 道路破壊後に元のタイルを維持したいから、道路も自然タイルの上に置きたい
+				// layerじゃなくてtilesに追加したいんだよな
+				layerNum := i // copy
 				if structureType != StructureRoad {
 					layerNum++
 				}

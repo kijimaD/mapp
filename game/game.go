@@ -233,6 +233,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				colorScale := 1.0
 				alpha := 1.0
 				if tile.HoverSprite != nil {
+					// プレビューは暗く描画する
 					sprite = tile.HoverSprite
 					colorScale = 0.6
 					if !world.World.HoverValid {
