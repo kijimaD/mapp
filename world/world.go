@@ -256,34 +256,18 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	_ = createTileEntity
 	// TODO Add entity
 
-	tileOccupied := func(tx int, ty int) bool {
-		return World.Level.Tiles[1][tx][ty].Sprite != nil ||
-			(World.Level.Tiles[0][tx][ty].Sprite != nil &&
-				(structureType != StructureRoad ||
-					World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
-	}
-
 	valid := true
 	// 道のタイルがすでにあるか判定
 	// TODO: バス停の場合は道路上にのみ建設できる
-	var existingRoadTiles int
 	for y := 0; y < m.Height; y++ {
 		for x := 0; x < m.Width; x++ {
 			tx, ty := (x+placeX)-w, (y+placeY)-h
-			if structureType == StructureRoad && World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID] {
-				existingRoadTiles++
-			}
-			if tileOccupied(tx, ty) && structureType != StructureBulldozer {
+			if TileOccupied(structureType, tx, ty) && structureType != StructureBulldozer {
 				valid = false
 			}
 		}
 	}
 
-	// 近接4タイル
-	if structureType == StructureRoad && existingRoadTiles == 4 {
-		valid = false
-	}
-	// 押下してないとき
 	if hover {
 		if structureType == StructureBulldozer {
 			World.HoverValid = true
@@ -299,7 +283,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 			tx, ty := (x+placeX)-w, (y+placeY)-h
 			if hover {
 				// 押し続けている間、建設予定地を暗くする
-				if !tileOccupied(tx, ty) || structureType == StructureBulldozer {
+				if !TileOccupied(structureType, tx, ty) || structureType == StructureBulldozer {
 					// タイルを平原にする
 					World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
 				}
@@ -323,7 +307,6 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 				// 道路以外の建設物はベースタイル(階層0)の上に存在する
 				// TODO: 道路破壊後に元のタイルを維持したいから、道路も自然タイルの上に置きたい
-				// layerじゃなくてtilesに追加したいんだよな
 				layerNum := i // copy
 				if structureType != StructureRoad {
 					layerNum++
@@ -335,7 +318,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 				tx, ty := (x+placeX)-w, (y+placeY)-h
 				if hover {
-					if !tileOccupied(tx, ty) || structureType == StructureBulldozer {
+					if !TileOccupied(structureType, tx, ty) || structureType == StructureBulldozer {
 						// クリック中に出る建設プレビュー画像をセットする
 						World.Level.Tiles[layerNum][tx][ty].HoverSprite = World.TileImages[t.Tileset.FirstGID+t.ID]
 					}

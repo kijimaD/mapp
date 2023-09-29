@@ -54,3 +54,10 @@ func ObjectToRect(o *tiled.Object) image.Rectangle {
 func LevelCoordinatesToScreen(x, y float64) (float64, float64) {
 	return (x - World.CamX) * World.CamScale, (y - World.CamY) * World.CamScale
 }
+
+func TileOccupied(structureType int, tx int, ty int) bool {
+	return World.Level.Tiles[1][tx][ty].Sprite != nil ||
+		(World.Level.Tiles[0][tx][ty].Sprite != nil &&
+			(structureType != StructureRoad ||
+				World.Level.Tiles[0][tx][ty].Sprite != World.TileImages[World.TileImagesFirstGID]))
+}
