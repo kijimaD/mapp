@@ -2,7 +2,6 @@
 package world
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"log"
@@ -39,7 +38,6 @@ type HUDButton struct {
 	StructureType                int
 }
 
-var ErrNothingToBulldoze = errors.New("nothing to bulldoze")
 var HUDButtons []*HUDButton
 var CameraMinZoom = 0.1
 var CameraMaxZoom = 10.0
@@ -118,7 +116,6 @@ func DrawMap(structureType int) *ebiten.Image {
 	if err != nil {
 		panic(err)
 	}
-
 	var t *tiled.LayerTile
 	for i, layer := range m.Layers {
 		for y := 0; y < m.Height; y++ {
@@ -201,20 +198,10 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		return nil, err
 	}
 
-	if m.Width != 1 || m.Height != 1 {
-		if placeX == 0 {
-			placeX = 1
-		}
-		if placeY == 0 {
-			placeY = 1
-		}
-	}
-
-	w := m.Width - 1
-	h := m.Height - 1
-
-	if placeX-w < 0 || placeY-h < 0 || placeX >= 256 || placeY >= 256 {
-		return nil, errors.New("invalid location: building does not fit")
+	w := m.Width
+	h := m.Height
+	if !ValidXY(placeX-w, placeY-h) || !ValidXY(placeX, placeY) {
+		return nil, ErrInvalidBuildingNotFit
 	}
 
 	structure := &Structure{
@@ -227,6 +214,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		// TODO bulldoze entire structure, remove from zones
 		var bulldozed bool
 		for i := range World.Level.Tiles {
+			// 破壊する = その階層のタイルをnilに設定する
 			if World.Level.Tiles[i][placeX][placeY].Sprite != nil {
 				World.Level.Tiles[i][placeX][placeY].Sprite = nil
 				bulldozed = true
@@ -234,33 +222,15 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 			var img *ebiten.Image
 			if i == 0 {
+				// 最下層はデフォルトタイルにする
 				img = World.TileImages[GrassTile+World.TileImagesFirstGID]
 			}
-			if World.Level.Tiles[i][placeX][placeY].EnvironmentSprite != img {
-				World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
-			}
+			// デフォルトタイルでないときのみ上書きする
+			World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
 		}
 		if !bulldozed {
 			return nil, ErrNothingToBulldoze
 		}
-		if !internal {
-			checkSpaces := 2
-			// PowerPlantはいらないので消していいが、参考になりそうなので残しておく
-		REMOVEPOWER:
-			for i, plant := range World.PowerPlants {
-				for dx := 0; dx < checkSpaces; dx++ {
-					for dy := 0; dy < checkSpaces; dy++ {
-						if placeX == plant.X-dx && placeY == plant.Y-dy {
-							World.PowerPlants = append(World.PowerPlants[:i], World.PowerPlants[i+1:]...)
-							bulldozeArea(plant.X, plant.Y, 5)
-							World.PowerUpdated = true
-							break REMOVEPOWER
-						}
-					}
-				}
-			}
-		}
-		World.Power.SetTile(placeX, placeY, false)
 		return structure, nil
 	}
 
@@ -317,27 +287,18 @@ VALIDBUILD:
 			World.HoverValid = valid
 		}
 	} else if !valid {
-		return nil, errors.New("invalid location: space already occupied")
+		return nil, ErrLocationOccupied
 	}
 
 	for y := 0; y < m.Height; y++ {
 		for x := 0; x < m.Width; x++ {
 			tx, ty := (x+placeX)-w, (y+placeY)-h
 			if hover {
+				// 押し続けている間、建設予定地を暗くする
 				if !tileOccupied(tx, ty) || structureType == StructureBulldozer {
-					if structureType != StructureBulldozer {
-						// ブルドーザーのときは、タイルを平原にする
-						World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
-					}
-					// Hide environment sprites temporarily.
-					for i := 1; i < len(World.Level.Tiles); i++ {
-						World.Level.Tiles[i][tx][ty].HoverSprite = asset.ImgBlank
-					}
+					// タイルを平原にする
+					World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
 				}
-			} else {
-				World.Level.Tiles[0][tx][ty].Sprite = World.TileImages[World.TileImagesFirstGID]
-				World.Level.Tiles[0][tx][ty].EnvironmentSprite = nil
-				World.Level.Tiles[1][tx][ty].EnvironmentSprite = nil
 			}
 		}
 	}
@@ -368,14 +329,12 @@ VALIDBUILD:
 				tx, ty := (x+placeX)-w, (y+placeY)-h
 				if hover {
 					if !tileOccupied(tx, ty) || structureType == StructureBulldozer {
+						// クリック中に出る建設プレビュー画像をセットする
 						World.Level.Tiles[layerNum][tx][ty].HoverSprite = World.TileImages[t.Tileset.FirstGID+t.ID]
 					}
 				} else {
+					// クリックを離して建設する
 					World.Level.Tiles[layerNum][tx][ty].Sprite = World.TileImages[t.Tileset.FirstGID+t.ID]
-
-					if structureType == StructureRoad {
-						World.Power.SetTile(tx, ty, true)
-					}
 				}
 
 				// TODO handle flipping
