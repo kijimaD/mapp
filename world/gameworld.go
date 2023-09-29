@@ -103,6 +103,8 @@ type GameWorld struct {
 	PowerAvailable int
 	PowerNeeded    int
 
+	Station StationMap
+
 	BuildDragX int
 	BuildDragY int
 
