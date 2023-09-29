@@ -79,7 +79,7 @@ func (g *game) Update() error {
 			return err
 		}
 
-		// Fill below ground layer.
+		// 平原レイヤーで埋める
 		var img uint32
 		for x := range world.World.Level.Tiles[0] {
 			for y := range world.World.Level.Tiles[0][x] {
@@ -220,6 +220,7 @@ func (g *game) renderSprite(
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
+	const heightFactor = 10 // 1つ階層が上がるとどれだけ上方向にずらして表示するか
 	// Handle background rendering separately to simplify design.
 	var drawn int
 	for i := range world.World.Level.Tiles {
@@ -247,7 +248,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 				} else {
 					continue
 				}
-				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-40), 0, 1, colorScale, alpha, false, false, sprite, screen)
+				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, sprite, screen)
 			}
 		}
 	}

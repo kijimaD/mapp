@@ -264,19 +264,8 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	valid := true
 	// 道のタイルがすでにあるか判定
 	var existingRoadTiles int
-VALIDBUILD:
-	for y := 0; y < m.Height; y++ {
-		for x := 0; x < m.Width; x++ {
-			tx, ty := (x+placeX)-w, (y+placeY)-h
-			if structureType == StructureRoad && World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID] {
-				existingRoadTiles++
-			}
-			if tileOccupied(tx, ty) && structureType != StructureBulldozer {
-				valid = false
-				break VALIDBUILD
-			}
-		}
-	}
+
+	// 近接4タイル
 	if structureType == StructureRoad && existingRoadTiles == 4 {
 		valid = false
 	}
@@ -317,6 +306,8 @@ VALIDBUILD:
 					continue
 				}
 
+				// 道路以外の建設物はベースタイル(階層0)の上に存在する
+				// TODO: 道路も自然タイルの上に置きたい
 				layerNum := i
 				if structureType != StructureRoad {
 					layerNum++
