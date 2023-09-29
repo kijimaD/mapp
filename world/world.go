@@ -292,6 +292,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	}
 
 	valid := true
+	// 道のタイルがすでにあるか判定
 	var existingRoadTiles int
 VALIDBUILD:
 	for y := 0; y < m.Height; y++ {
@@ -325,6 +326,7 @@ VALIDBUILD:
 			if hover {
 				if !tileOccupied(tx, ty) || structureType == StructureBulldozer {
 					if structureType != StructureBulldozer {
+						// ブルドーザーのときは、タイルを平原にする
 						World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
 					}
 					// Hide environment sprites temporarily.

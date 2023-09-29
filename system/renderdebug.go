@@ -40,7 +40,7 @@ func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error
 	tileX, tileY := world.ScreenToCartesian(mouseX, mouseY)
 	ebitenutil.DebugPrintAt(
 		s.debugImg,
-		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\nMouse(%d,%d)\nTile(%.0f,%.0f)\n",
+		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\nMouse (%d,%d)\nTile (%.0f,%.0f)\nHover %d\n",
 			world.World.EnvironmentSprites,
 			gohan.CurrentEntities(),
 			gohan.CurrentUpdates(),
@@ -51,6 +51,7 @@ func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error
 			mouseY,
 			tileX,
 			tileY,
+			world.World.HoverStructure,
 		),
 		0,
 		0,
