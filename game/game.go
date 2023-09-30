@@ -88,6 +88,7 @@ func (g *game) Update() error {
 					continue
 				}
 				world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
+				world.World.Level.Tiles[0][x][y].TileType = world.PlainTile
 			}
 		}
 
@@ -247,8 +248,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 					if i > 1 {
 						alpha = 0.2
 					}
-				} else if tile.EnvironmentSprite != nil {
-					sprite = tile.EnvironmentSprite
+				} else if tile.TileType == world.PlainTile {
+					img := world.GrassTile
+					sprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
 				} else {
 					continue
 				}
