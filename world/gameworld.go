@@ -61,8 +61,6 @@ type GameWorld struct {
 	Messages      []string // 右上に一時的に表示するメッセージ。MessagesとMessagesTicksのスライスの数は対応している
 	MessagesTicks []int    // 右上に一時的に表示するメッセージの残り秒
 
-	Station StationMap
-
 	BuildDragX int
 	BuildDragY int
 
