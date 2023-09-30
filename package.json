@@ -8,7 +8,7 @@
   "main": "index.js",
   "author": "Kijima Daigo",
   "private": true,
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "devDependencies": {
     "semantic-release": "^22.0.0",
     "semantic-release-cli": "^5.4.4"

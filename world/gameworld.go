@@ -35,7 +35,7 @@ type GameWorld struct {
 	PlayerWidth  float64
 	PlayerHeight float64
 
-	HoverStructure         int
+	HoverStructure         int // 選択中の建設物
 	HoverX, HoverY         int
 	HoverLastX, HoverLastY int
 	HoverValid             bool
@@ -102,6 +102,8 @@ type GameWorld struct {
 	PowerUpdated   bool
 	PowerAvailable int
 	PowerNeeded    int
+
+	Station StationMap
 
 	BuildDragX int
 	BuildDragY int

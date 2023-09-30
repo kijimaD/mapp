@@ -23,7 +23,7 @@ var StructureTooltips = map[int]string{
 	StructureToggleHelp: "Help",
 	StructureBulldozer:  "Bulldozer",
 	StructureRoad:       "Road",
-	StationBusStop:      "BusStop",
+	StationBusStop:      "Bus Stop",
 }
 
 // 実行に必要な額

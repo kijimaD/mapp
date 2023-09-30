@@ -54,3 +54,17 @@ func ObjectToRect(o *tiled.Object) image.Rectangle {
 func LevelCoordinatesToScreen(x, y float64) (float64, float64) {
 	return (x - World.CamX) * World.CamScale, (y - World.CamY) * World.CamScale
 }
+
+// TODO: タイルによって置ける条件を変えたい
+func Buildable(structureType int, tx int, ty int) bool {
+	var result bool
+	switch structureType {
+	case StructureRoad:
+		result = World.Level.Tiles[0][tx][ty].Sprite == nil ||
+			World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID]
+	case StationBusStop:
+		result = World.Level.Tiles[1][tx][ty].Sprite == nil ||
+			World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID]
+	}
+	return result
+}
