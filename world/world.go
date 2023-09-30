@@ -262,14 +262,14 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	for y := 0; y < m.Height; y++ {
 		for x := 0; x < m.Width; x++ {
 			tx, ty := (x+placeX)-w, (y+placeY)-h
-			if TileOccupied(structureType, tx, ty) && structureType != StructureBulldozer {
+			if !Buildable(structureType, tx, ty) && structureType != StructureBulldozer {
 				valid = false
 			}
 		}
 	}
-
 	if hover {
 		if structureType == StructureBulldozer {
+			// ブルドーザーの場合は常に破壊できる
 			World.HoverValid = true
 		} else {
 			World.HoverValid = valid
@@ -278,13 +278,14 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		return nil, ErrLocationOccupied
 	}
 
+	// ホバー時のタイルのプレビュー表示
 	for y := 0; y < m.Height; y++ {
 		for x := 0; x < m.Width; x++ {
 			tx, ty := (x+placeX)-w, (y+placeY)-h
 			if hover {
-				// 押し続けている間、建設予定地を暗くする
-				if !TileOccupied(structureType, tx, ty) || structureType == StructureBulldozer {
+				if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 					// タイルを平原にする
+					// レベルは0なので、建設物の後ろのタイルを平原にセットする効果がある
 					World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
 				}
 			}
@@ -318,7 +319,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 				tx, ty := (x+placeX)-w, (y+placeY)-h
 				if hover {
-					if !TileOccupied(structureType, tx, ty) || structureType == StructureBulldozer {
+					if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 						// クリック中に出る建設プレビュー画像をセットする
 						World.Level.Tiles[layerNum][tx][ty].HoverSprite = World.TileImages[t.Tileset.FirstGID+t.ID]
 					}
