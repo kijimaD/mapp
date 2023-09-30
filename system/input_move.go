@@ -67,7 +67,7 @@ func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY in
 }
 
 func (s *playerMoveSystem) Update(e gohan.Entity) error {
-	if ebiten.IsKeyPressed(ebiten.KeyEscape) && !world.World.DisableEsc {
+	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		os.Exit(0)
 		return nil
 	}
@@ -75,11 +75,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 	// デバッグモード
 	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
 		world.World.IsDebug = !world.World.IsDebug
-		return nil
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyN) {
-		world.World.NoClip = !world.World.NoClip
 		return nil
 	}
 
@@ -209,9 +204,6 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 						world.SetHoverStructure(button.StructureType)
 					}
 				}
-			} else if world.AltButtonAt(x, y) == 0 {
-				world.World.ShowRCIWindow = !world.World.ShowRCIWindow
-				world.World.HUDUpdated = true
 			}
 		}
 		return nil

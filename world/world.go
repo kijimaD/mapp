@@ -46,17 +46,10 @@ var GrassTile = uint32(0)
 var World = &GameWorld{
 	CamScale:       startingZoom,
 	CamScaleTarget: startingZoom,
-	CamMoving:      true,
-
-	PlayerWidth:  8,
-	PlayerHeight: 32,
 
 	TileImages: make(map[uint32]*ebiten.Image),
 	ResetGame:  true,
 	Level:      NewLevel(256),
-
-	Power:     newPowerMap(),
-	PowerOuts: newPowerOuts(),
 
 	BuildDragX: -1,
 	BuildDragY: -1,
@@ -81,14 +74,6 @@ func Reset() {
 	rand.Seed(time.Now().UnixNano())
 
 	World.Funds = startingFunds
-
-	World.ObjectGroups = nil
-	World.HazardRects = nil
-	World.CreepRects = nil
-	World.CreepEntities = nil
-	World.TriggerEntities = nil
-	World.TriggerRects = nil
-	World.TriggerNames = nil
 
 	World.CamX = float64((32 * TileSize) - rand.Intn(64*TileSize))
 	World.CamY = float64((32 * TileSize) + rand.Intn(32*TileSize))
