@@ -219,8 +219,8 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		var bulldozed bool
 		for i := range World.Level.Tiles {
 			// 破壊する = その階層のタイルをnilに設定する
-			if World.Level.Tiles[i][placeX][placeY].Sprite != nil {
-				World.Level.Tiles[i][placeX][placeY].Sprite = nil
+			if World.Level.Tiles[i][placeX-w][placeY-w].Sprite != nil {
+				World.Level.Tiles[i][placeX-w][placeY-w].Sprite = nil
 				bulldozed = true
 			}
 
