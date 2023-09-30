@@ -16,10 +16,7 @@ type GameWorld struct {
 
 	ScreenW, ScreenH int
 
-	DisableEsc bool
-
 	IsDebug bool
-	NoClip  bool
 
 	GameStarted      bool
 	GameStartedTicks int
@@ -30,36 +27,18 @@ type GameWorld struct {
 	CamX, CamY     float64
 	CamScale       float64
 	CamScaleTarget float64
-	CamMoving      bool
-
-	PlayerWidth  float64
-	PlayerHeight float64
 
 	HoverStructure         int // 選択中の建設物
 	HoverX, HoverY         int
 	HoverLastX, HoverLastY int
 	HoverValid             bool
 
-	Map             *tiled.Map
-	ObjectGroups    []*tiled.ObjectGroup
-	HazardRects     []image.Rectangle
-	CreepRects      []image.Rectangle
-	CreepEntities   []gohan.Entity
-	TriggerEntities []gohan.Entity
-	TriggerRects    []image.Rectangle
-	TriggerNames    []string
-
-	NativeResolution bool
-
-	BrokenPieceA, BrokenPieceB gohan.Entity
+	Map *tiled.Map
 
 	TileImages         map[uint32]*ebiten.Image
 	TileImagesFirstGID uint32
 
 	ResetGame bool
-
-	MuteMusic        bool
-	MuteSoundEffects bool // TODO
 
 	GotCursorPosition bool
 
@@ -67,55 +46,26 @@ type GameWorld struct {
 
 	EnvironmentSprites int
 
-	SelectedStructure *Structure
-
 	HUDUpdated     bool
 	HUDButtonRects []image.Rectangle
-
-	RCIButtonRect image.Rectangle
-	RCIWindowRect image.Rectangle
-	ShowRCIWindow bool
 
 	HelpUpdated     bool
 	HelpPage        int
 	HelpButtonRects []image.Rectangle
 
-	PowerPlants []*PowerPlant
-
-	HavePowerOut bool
-	PowerOuts    [][]bool
-
 	Ticks int
-
-	Paused bool
-
 	Funds int
 
 	Printer *message.Printer
 
-	TransparentStructures bool
-
 	Messages      []string // 右上に一時的に表示するメッセージ。MessagesとMessagesTicksのスライスの数は対応している
 	MessagesTicks []int    // 右上に一時的に表示するメッセージの残り秒
-
-	Power          PowerMap
-	PowerUpdated   bool
-	PowerAvailable int
-	PowerNeeded    int
-
-	Station StationMap
 
 	BuildDragX int
 	BuildDragY int
 
 	LastBuildX int
 	LastBuildY int
-
-	TaxR float64
-	TaxC float64
-	TaxI float64
-
-	resetTipShown bool
 }
 
 func (w *GameWorld) SetGameOver(vx, vy float64) {

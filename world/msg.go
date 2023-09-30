@@ -61,14 +61,6 @@ func HUDButtonAt(x, y int) *HUDButton {
 	return nil
 }
 
-func AltButtonAt(x, y int) int {
-	point := image.Point{x, y}
-	if point.In(World.RCIButtonRect) {
-		return 0
-	}
-	return -1
-}
-
 // 建設を選択中
 func SetHoverStructure(structureType int) {
 	World.HoverStructure = structureType

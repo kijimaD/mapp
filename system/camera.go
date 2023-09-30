@@ -1,10 +1,10 @@
 package system
 
 import (
-	"github.com/kijimaD/mapp/component"
-	"github.com/kijimaD/mapp/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/component"
+	"github.com/kijimaD/mapp/world"
 )
 
 const CameraMoveSpeed = 0.132
@@ -24,7 +24,6 @@ func (s *CameraSystem) Update(e gohan.Entity) error {
 		return nil
 	}
 
-	world.World.CamMoving = true
 	// TODO
 	return nil
 }

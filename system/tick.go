@@ -1,10 +1,10 @@
 package system
 
 import (
-	"github.com/kijimaD/mapp/component"
-	"github.com/kijimaD/mapp/world"
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/component"
+	"github.com/kijimaD/mapp/world"
 )
 
 type TickSystem struct {
@@ -19,10 +19,6 @@ func NewTickSystem() *TickSystem {
 }
 
 func (s *TickSystem) Update(_ gohan.Entity) error {
-	if world.World.Paused {
-		return nil
-	}
-
 	// Update date display.
 	if world.World.Ticks%world.MonthTicks == 0 {
 		world.World.HUDUpdated = true

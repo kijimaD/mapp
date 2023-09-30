@@ -97,20 +97,20 @@ func (g *game) Update() error {
 		world.HUDButtons = []*world.HUDButton{
 			{
 				StructureType: world.StructureBulldozer,
-				Sprite:        world.DrawMap(world.StructureBulldozer),
+				Sprite:        world.DrawStructure(world.StructureBulldozer),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},
 			nil,
 			{
 				StructureType: world.StructureRoad,
-				Sprite:        world.DrawMap(world.StructureRoad),
+				Sprite:        world.DrawStructure(world.StructureRoad),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},
 			{
 				StructureType: world.StationBusStop,
-				Sprite:        world.DrawMap(world.StationBusStop),
+				Sprite:        world.DrawStructure(world.StationBusStop),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},
@@ -221,7 +221,10 @@ func (g *game) renderSprite(
 
 func (g *game) Draw(screen *ebiten.Image) {
 	const heightFactor = 10 // 1つ階層が上がるとどれだけ上方向にずらして表示するか
-	// Handle background rendering separately to simplify design.
+	// タイル描画。タイルはEntityになっていない
+	// エンティティ個別に描くのではなく、タイルそれぞれについてイテレートして描画する
+	// 空間と物があるとして、空間を先にループさせる、ような感じ。そっちのほうが効率的になりそうなのはわかる
+	// タイルは静的であまり変わることがない。といいつつ地形改変もある
 	var drawn int
 	for i := range world.World.Level.Tiles {
 		for x := range world.World.Level.Tiles[i] {
@@ -241,7 +244,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 					}
 				} else if tile.Sprite != nil {
 					sprite = tile.Sprite
-					if world.World.TransparentStructures && i > 1 {
+					if i > 1 {
 						alpha = 0.2
 					}
 				} else if tile.EnvironmentSprite != nil {
@@ -268,7 +271,6 @@ func (g *game) addSystems() {
 	// Input systems.
 	g.movementSystem = system.NewMovementSystem()
 	gohan.AddSystem(system.NewPlayerMoveSystem(world.World.Player, g.movementSystem))
-	gohan.AddSystem(g.movementSystem)
 
 	// Render systems.
 	gohan.AddSystem(system.NewCameraSystem())
