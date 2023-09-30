@@ -97,20 +97,20 @@ func (g *game) Update() error {
 		world.HUDButtons = []*world.HUDButton{
 			{
 				StructureType: world.StructureBulldozer,
-				Sprite:        world.DrawMap(world.StructureBulldozer),
+				Sprite:        world.DrawStructure(world.StructureBulldozer),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},
 			nil,
 			{
 				StructureType: world.StructureRoad,
-				Sprite:        world.DrawMap(world.StructureRoad),
+				Sprite:        world.DrawStructure(world.StructureRoad),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},
 			{
 				StructureType: world.StationBusStop,
-				Sprite:        world.DrawMap(world.StationBusStop),
+				Sprite:        world.DrawStructure(world.StationBusStop),
 				SpriteOffsetX: 0,
 				SpriteOffsetY: -60,
 			},

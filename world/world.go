@@ -94,7 +94,7 @@ func loadMap(structureType int) (*tiled.Map, error) {
 	return m, err
 }
 
-func DrawMap(structureType int) *ebiten.Image {
+func DrawStructure(structureType int) *ebiten.Image {
 	img := ebiten.NewImage(128, 128)
 
 	m, err := loadMap(structureType)
