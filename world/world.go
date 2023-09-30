@@ -222,8 +222,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 			X: x,
 			Y: y,
 		})
-
-		mapTile.AddComponent(&component.Sprite{
+		mapTile.AddComponent(&component.Renderable{
 			Image:          World.TileImages[t.Tileset.FirstGID+t.ID],
 			HorizontalFlip: t.HorizontalFlip,
 			VerticalFlip:   t.VerticalFlip,
