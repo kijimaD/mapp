@@ -55,16 +55,14 @@ func LevelCoordinatesToScreen(x, y float64) (float64, float64) {
 	return (x - World.CamX) * World.CamScale, (y - World.CamY) * World.CamScale
 }
 
-// TODO: タイルによって置ける条件を変えたい
+// タイルによって置ける条件が変わる
 func Buildable(structureType int, tx int, ty int) bool {
 	var result bool
 	switch structureType {
 	case StructureRoad:
-		result = World.Level.Tiles[0][tx][ty].Sprite == nil ||
-			World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID]
+		result = World.Level.Tiles[0][tx][ty].TileType == PlainTile
 	case StationBusStop:
-		result = World.Level.Tiles[1][tx][ty].Sprite == nil ||
-			World.Level.Tiles[0][tx][ty].Sprite == World.TileImages[World.TileImagesFirstGID]
+		result = World.Level.Tiles[0][tx][ty].TileType == RoadTile
 	}
 	return result
 }

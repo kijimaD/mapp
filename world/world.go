@@ -200,22 +200,16 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 	// ブルドーザーを選択中に押すと削除する
 	if structureType == StructureBulldozer && !hover {
-		// TODO bulldoze entire structure, remove from zones
-		var bulldozed bool
-		for i := range World.Level.Tiles {
-			// 破壊する = その階層のタイルをnilに設定する
-			if World.Level.Tiles[i][placeX-w][placeY-w].Sprite != nil {
-				World.Level.Tiles[i][placeX-w][placeY-w].Sprite = nil
-				bulldozed = true
-			}
+		// TODO: 現在はタイル削除だけ。上にある建物削除をやる
+		// TODO: タイルの階層は1層にする予定
+		// 破壊する = その階層のタイルをnilに設定する
+		World.Level.Tiles[0][placeX-w][placeY-w].TileType = PlainTile
+		bulldozed := true
 
-			var img *ebiten.Image
-			if i == 0 {
-				// 最下層はデフォルトタイルにする
-				img = World.TileImages[GrassTile+World.TileImagesFirstGID]
-			}
-			World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
-		}
+		// 最下層はデフォルトタイルにする
+		img := World.TileImages[GrassTile+World.TileImagesFirstGID]
+
+		World.Level.Tiles[0][placeX][placeY].EnvironmentSprite = img
 		if !bulldozed {
 			return nil, ErrNothingToBulldoze
 		}
@@ -310,9 +304,16 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 					}
 				} else {
 					// クリックを離して建設する
-					World.Level.Tiles[layerNum][tx][ty].Sprite = World.TileImages[t.Tileset.FirstGID+t.ID]
+					var tiletype TileType
+					if structureType == StructureRoad {
+						tiletype = RoadTile
+					} else if structureType == StationBusStop {
+						tiletype = BusStopTile
+					} else if structureType == StructurePlain {
+						tiletype = PlainTile
+					}
+					World.Level.Tiles[layerNum][tx][ty].TileType = tiletype
 				}
-
 				// TODO handle flipping
 			}
 		}

@@ -5,7 +5,6 @@ import (
 )
 
 type Tile struct {
-	Sprite            *ebiten.Image
 	EnvironmentSprite *ebiten.Image
 	HoverSprite       *ebiten.Image
 	TileType          TileType

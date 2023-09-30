@@ -243,16 +243,21 @@ func (g *game) Draw(screen *ebiten.Image) {
 					if !world.World.HoverValid {
 						colorScale = 0.2
 					}
-				} else if tile.Sprite != nil {
-					sprite = tile.Sprite
-					if i > 1 {
-						alpha = 0.2
-					}
+				} else if tile.TileType == world.BusStopTile {
+					img := world.GrassTile
+					// TODO: インデックス直指定をやめる
+					sprite = world.World.TileImages[img+world.World.TileImagesFirstGID+25]
+				} else if tile.TileType == world.RoadTile {
+					img := world.GrassTile
+					sprite = world.World.TileImages[img+world.World.TileImagesFirstGID+24]
 				} else if tile.TileType == world.PlainTile {
 					img := world.GrassTile
 					sprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
 				} else {
 					continue
+				}
+				if i > 1 {
+					alpha = 0.2
 				}
 				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, sprite, screen)
 			}
