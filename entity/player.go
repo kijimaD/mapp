@@ -9,7 +9,6 @@ func NewPlayer() gohan.Entity {
 	player := gohan.NewEntity()
 
 	player.AddComponent(&component.Position{})
-	player.AddComponent(&component.Velocity{})
 
 	return player
 }

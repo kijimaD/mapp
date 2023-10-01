@@ -8,7 +8,6 @@ import (
 
 type MovementSystem struct {
 	Position *component.Position
-	Velocity *component.Velocity
 }
 
 func NewMovementSystem() *MovementSystem {

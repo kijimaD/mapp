@@ -20,7 +20,6 @@ const (
 
 type RenderHudSystem struct {
 	Position *component.Position
-	Velocity *component.Velocity
 
 	op           *ebiten.DrawImageOptions
 	hudImg       *ebiten.Image
