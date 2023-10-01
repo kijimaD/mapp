@@ -203,15 +203,13 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		// TODO: 現在はタイル削除だけ。上にある建物削除をやる
 		// TODO: タイルの階層は1層にする予定
 		// 破壊する = その階層のタイルをnilに設定する
-		World.Level.Tiles[0][placeX-w][placeY-w].TileType = PlainTile
-		bulldozed := true
-
-		// 最下層はデフォルトタイルにする
-		img := World.TileImages[GrassTile+World.TileImagesFirstGID]
-
-		World.Level.Tiles[0][placeX][placeY].EnvironmentSprite = img
+		bulldozed := false
+		if World.Level.Tiles[0][placeX-w][placeY-w].TileType != PlainTile {
+			World.Level.Tiles[0][placeX-w][placeY-w].TileType = PlainTile
+			bulldozed = true
+		}
 		if !bulldozed {
-			return nil, ErrNothingToBulldoze
+			return nil, ErrNothingToBulldoze // FIXME: このエラーをメッセージに出したい
 		}
 		return structure, nil
 	}

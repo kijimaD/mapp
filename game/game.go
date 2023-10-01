@@ -80,14 +80,8 @@ func (g *game) Update() error {
 		}
 
 		// 平原レイヤーで埋める
-		var img uint32
 		for x := range world.World.Level.Tiles[0] {
 			for y := range world.World.Level.Tiles[0][x] {
-				img = world.GrassTile
-				if world.World.Level.Tiles[0][x][y].EnvironmentSprite != nil {
-					continue
-				}
-				world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
 				world.World.Level.Tiles[0][x][y].TileType = world.PlainTile
 			}
 		}

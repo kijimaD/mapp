@@ -5,9 +5,8 @@ import (
 )
 
 type Tile struct {
-	EnvironmentSprite *ebiten.Image
-	HoverSprite       *ebiten.Image
-	TileType          TileType
+	HoverSprite *ebiten.Image
+	TileType    TileType
 }
 
 // levelは高さのことっぽい
