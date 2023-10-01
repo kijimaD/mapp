@@ -15,21 +15,17 @@ import (
 type playerMoveSystem struct {
 	Position *component.Position
 
-	player   gohan.Entity
-	movement *MovementSystem
-
 	scrollDragX, scrollDragY         int
 	scrollCamStartX, scrollCamStartY float64
 }
 
-func NewPlayerMoveSystem(player gohan.Entity, m *MovementSystem) *playerMoveSystem {
+func NewPlayerMoveSystem() *playerMoveSystem {
 	return &playerMoveSystem{
-		player:      player,
-		movement:    m,
 		scrollDragX: -1,
 		scrollDragY: -1,
 	}
 }
+
 func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY int, playSound bool) (*world.Structure, error) {
 	cost := world.StructureCosts[structureType]
 	if world.World.Funds < cost {

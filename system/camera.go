@@ -3,15 +3,12 @@ package system
 import (
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
 )
 
 const CameraMoveSpeed = 0.132
 
-type CameraSystem struct {
-	Position *component.Position
-}
+type CameraSystem struct{}
 
 func NewCameraSystem() *CameraSystem {
 	s := &CameraSystem{}

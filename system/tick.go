@@ -3,13 +3,10 @@ package system
 import (
 	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
 )
 
-type TickSystem struct {
-	Position *component.Position
-}
+type TickSystem struct{}
 
 func NewTickSystem() *TickSystem {
 	s := &TickSystem{}
@@ -23,6 +20,7 @@ func (s *TickSystem) Update(_ gohan.Entity) error {
 		world.World.HUDUpdated = true
 	}
 	if world.World.Ticks%144 == 0 {
+		// 右上に出るメッセージ
 		world.TickMessages()
 	}
 	world.World.Ticks++

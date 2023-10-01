@@ -2,8 +2,6 @@ package system
 
 import (
 	"os"
-	"path"
-	"runtime"
 	"runtime/pprof"
 
 	"code.rocketnine.space/tslocum/gohan"
@@ -25,14 +23,8 @@ func NewProfileSystem(player gohan.Entity) *profileSystem {
 func (s *profileSystem) Update(_ gohan.Entity) error {
 	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		if s.cpuProfile == nil {
-			runtime.SetCPUProfileRate(1000)
-
-			homeDir, err := os.UserHomeDir()
-			if err != nil {
-				return err
-			}
-
-			s.cpuProfile, err = os.Create(path.Join(homeDir, "bbbb.prof"))
+			cpuProfile, err := os.Create("mapp.prof")
+			s.cpuProfile = cpuProfile
 			if err != nil {
 				return err
 			}

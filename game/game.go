@@ -279,8 +279,8 @@ func (g *game) addSystems() {
 	gohan.AddSystem(system.NewTickSystem())
 
 	// Input systems.
-	g.movementSystem = system.NewMovementSystem()
-	gohan.AddSystem(system.NewPlayerMoveSystem(world.World.Player, g.movementSystem))
+
+	gohan.AddSystem(system.NewPlayerMoveSystem())
 
 	// Render systems.
 	gohan.AddSystem(system.NewCameraSystem())
