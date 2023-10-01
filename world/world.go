@@ -58,6 +58,8 @@ var World = &GameWorld{
 
 	Printer: message.NewPrinter(language.English),
 	IsDebug: true,
+
+	PreviewTileType: PlainTile,
 }
 
 type PowerPlant struct {
@@ -262,7 +264,8 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 				if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 					// タイルを平原にする
 					// レベルは0なので、建設物の後ろのタイルを平原にセットする効果がある
-					World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
+					World.Level.Tiles[0][tx][ty].Hover = true
+					World.PreviewTileType = PlainTile
 				}
 			}
 		}
@@ -297,18 +300,12 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 				if hover {
 					if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 						// クリック中に出る建設プレビュー画像をセットする
-						World.Level.Tiles[layerNum][tx][ty].HoverSprite = World.TileImages[t.Tileset.FirstGID+t.ID]
+						World.Level.Tiles[layerNum][tx][ty].Hover = true
+						World.PreviewTileType = structureToTile(structureType)
 					}
 				} else {
 					// クリックを離して建設する
-					var tiletype TileType
-					if structureType == StructureRoad {
-						tiletype = RoadTile
-					} else if structureType == StationBusStop {
-						tiletype = BusStopTile
-					} else if structureType == StructurePlain {
-						tiletype = PlainTile
-					}
+					tiletype := structureToTile(structureType)
 					World.Level.Tiles[layerNum][tx][ty].TileType = tiletype
 				}
 				// TODO handle flipping
@@ -317,6 +314,18 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 	}
 
 	return structure, nil
+}
+
+func structureToTile(structureType int) TileType {
+	var tiletype TileType
+	if structureType == StructureRoad {
+		tiletype = RoadTile
+	} else if structureType == StationBusStop {
+		tiletype = BusStopTile
+	} else if structureType == StructurePlain {
+		tiletype = PlainTile
+	}
+	return tiletype
 }
 
 func StartGame() {
