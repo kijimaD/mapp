@@ -66,6 +66,8 @@ type GameWorld struct {
 
 	LastBuildX int
 	LastBuildY int
+
+	PreviewTileType TileType // 選択中の、プレビュー表示するタイルタイプ。TODO: エンティティに移動させる
 }
 
 func (w *GameWorld) SetGameOver(vx, vy float64) {

@@ -1,13 +1,8 @@
 package world
 
-import (
-	"github.com/hajimehoshi/ebiten/v2"
-)
-
 type Tile struct {
-	Sprite            *ebiten.Image
-	EnvironmentSprite *ebiten.Image
-	HoverSprite       *ebiten.Image
+	Hover    bool // タイルがプレビュー表示中かどうか。falseが通常時。エンティティに移動させたい
+	TileType TileType
 }
 
 // levelは高さのことっぽい
@@ -48,7 +43,7 @@ func (l *GameLevel) ClearHoverSprites() {
 				if tile == nil {
 					continue
 				}
-				tile.HoverSprite = nil
+				tile.Hover = false
 			}
 		}
 	}

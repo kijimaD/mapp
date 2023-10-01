@@ -58,6 +58,8 @@ var World = &GameWorld{
 
 	Printer: message.NewPrinter(language.English),
 	IsDebug: true,
+
+	PreviewTileType: PlainTile,
 }
 
 type PowerPlant struct {
@@ -200,24 +202,16 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 
 	// ブルドーザーを選択中に押すと削除する
 	if structureType == StructureBulldozer && !hover {
-		// TODO bulldoze entire structure, remove from zones
-		var bulldozed bool
-		for i := range World.Level.Tiles {
-			// 破壊する = その階層のタイルをnilに設定する
-			if World.Level.Tiles[i][placeX-w][placeY-w].Sprite != nil {
-				World.Level.Tiles[i][placeX-w][placeY-w].Sprite = nil
-				bulldozed = true
-			}
-
-			var img *ebiten.Image
-			if i == 0 {
-				// 最下層はデフォルトタイルにする
-				img = World.TileImages[GrassTile+World.TileImagesFirstGID]
-			}
-			World.Level.Tiles[i][placeX][placeY].EnvironmentSprite = img
+		// TODO: 現在はタイル削除だけ。上にある建物削除をやる
+		// TODO: タイルの階層は1層にする予定
+		// 破壊する = その階層のタイルをnilに設定する
+		bulldozed := false
+		if World.Level.Tiles[0][placeX-w][placeY-w].TileType != PlainTile {
+			World.Level.Tiles[0][placeX-w][placeY-w].TileType = PlainTile
+			bulldozed = true
 		}
 		if !bulldozed {
-			return nil, ErrNothingToBulldoze
+			return nil, ErrNothingToBulldoze // FIXME: このエラーをメッセージに出したい
 		}
 		return structure, nil
 	}
@@ -228,8 +222,7 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 			X: x,
 			Y: y,
 		})
-
-		mapTile.AddComponent(&component.Sprite{
+		mapTile.AddComponent(&component.Renderable{
 			Image:          World.TileImages[t.Tileset.FirstGID+t.ID],
 			HorizontalFlip: t.HorizontalFlip,
 			VerticalFlip:   t.VerticalFlip,
@@ -271,7 +264,8 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 				if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 					// タイルを平原にする
 					// レベルは0なので、建設物の後ろのタイルを平原にセットする効果がある
-					World.Level.Tiles[0][tx][ty].HoverSprite = World.TileImages[World.TileImagesFirstGID]
+					World.Level.Tiles[0][tx][ty].Hover = true
+					World.PreviewTileType = PlainTile
 				}
 			}
 		}
@@ -306,19 +300,32 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 				if hover {
 					if Buildable(structureType, tx, ty) || structureType == StructureBulldozer {
 						// クリック中に出る建設プレビュー画像をセットする
-						World.Level.Tiles[layerNum][tx][ty].HoverSprite = World.TileImages[t.Tileset.FirstGID+t.ID]
+						World.Level.Tiles[layerNum][tx][ty].Hover = true
+						World.PreviewTileType = structureToTile(structureType)
 					}
 				} else {
 					// クリックを離して建設する
-					World.Level.Tiles[layerNum][tx][ty].Sprite = World.TileImages[t.Tileset.FirstGID+t.ID]
+					tiletype := structureToTile(structureType)
+					World.Level.Tiles[layerNum][tx][ty].TileType = tiletype
 				}
-
 				// TODO handle flipping
 			}
 		}
 	}
 
 	return structure, nil
+}
+
+func structureToTile(structureType int) TileType {
+	var tiletype TileType
+	if structureType == StructureRoad {
+		tiletype = RoadTile
+	} else if structureType == StationBusStop {
+		tiletype = BusStopTile
+	} else if structureType == StructurePlain {
+		tiletype = PlainTile
+	}
+	return tiletype
 }
 
 func StartGame() {

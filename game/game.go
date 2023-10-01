@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 	"os"
 	"sync"
@@ -80,14 +81,9 @@ func (g *game) Update() error {
 		}
 
 		// 平原レイヤーで埋める
-		var img uint32
 		for x := range world.World.Level.Tiles[0] {
 			for y := range world.World.Level.Tiles[0][x] {
-				img = world.GrassTile
-				if world.World.Level.Tiles[0][x][y].EnvironmentSprite != nil {
-					continue
-				}
-				world.World.Level.Tiles[0][x][y].EnvironmentSprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
+				world.World.Level.Tiles[0][x][y].TileType = world.PlainTile
 			}
 		}
 
@@ -235,24 +231,22 @@ func (g *game) Draw(screen *ebiten.Image) {
 				var sprite *ebiten.Image
 				colorScale := 1.0
 				alpha := 1.0
-				if tile.HoverSprite != nil {
-					// プレビューは暗く描画する
-					sprite = tile.HoverSprite
-					colorScale = 0.6
-					if !world.World.HoverValid {
-						colorScale = 0.2
-					}
-				} else if tile.Sprite != nil {
-					sprite = tile.Sprite
-					if i > 1 {
-						alpha = 0.2
-					}
-				} else if tile.EnvironmentSprite != nil {
-					sprite = tile.EnvironmentSprite
-				} else {
+
+				sprite, err := g.tileToImage(tile.TileType)
+				if err != nil {
 					continue
 				}
 				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, sprite, screen)
+
+				// プレビュー表示
+				if tile.Hover {
+					colorScale = 0.6
+					alpha := 0.8
+					previewSprite, err := g.tileToImage(world.World.PreviewTileType)
+					if err == nil {
+						drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, previewSprite, screen)
+					}
+				}
 			}
 		}
 	}
@@ -262,6 +256,22 @@ func (g *game) Draw(screen *ebiten.Image) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// TODO: インデックス直指定をやめる
+func (g *game) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
+	var sprite *ebiten.Image
+	img := world.GrassTile
+	if tileType == world.BusStopTile {
+		sprite = world.World.TileImages[img+world.World.TileImagesFirstGID+25]
+	} else if tileType == world.RoadTile {
+		sprite = world.World.TileImages[img+world.World.TileImagesFirstGID+24]
+	} else if tileType == world.PlainTile {
+		sprite = world.World.TileImages[img+world.World.TileImagesFirstGID]
+	} else {
+		return nil, fmt.Errorf("not found tile")
+	}
+	return sprite, nil
 }
 
 func (g *game) addSystems() {
