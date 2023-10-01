@@ -86,17 +86,19 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Build image for release
+        if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v2
         with:
           context: .
           builder: ${{ steps.buildx.outputs.name }}
           target: release
           push: true
-          tags: ghcr.io/kijimad/garbanzo:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/garbanzo:latest
+          tags: ghcr.io/kijimad/mapp:${{ steps.git-tag.outputs.git-tag }},ghcr.io/kijimad/mapp:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
       - name: Move cache
+        if: github.ref == 'refs/heads/main'
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
