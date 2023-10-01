@@ -50,6 +50,7 @@ func (s *RenderHudSystem) Update(_ gohan.Entity) error {
 
 func (s *RenderHudSystem) Draw(_ gohan.Entity, screen *ebiten.Image) error {
 	// Draw HUD.
+
 	if world.World.HUDUpdated {
 		s.hudImg.Clear()
 		s.drawSidebar()

@@ -10,14 +10,11 @@ import (
 )
 
 type profileSystem struct {
-	player     gohan.Entity
 	cpuProfile *os.File
 }
 
-func NewProfileSystem(player gohan.Entity) *profileSystem {
-	return &profileSystem{
-		player: player,
-	}
+func NewProfileSystem() *profileSystem {
+	return &profileSystem{}
 }
 
 func (s *profileSystem) Update(_ gohan.Entity) error {

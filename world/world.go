@@ -71,7 +71,6 @@ func Reset() {
 	for _, e := range gohan.AllEntities() {
 		e.Remove()
 	}
-	World.Player = 0
 
 	rand.Seed(time.Now().UnixNano())
 

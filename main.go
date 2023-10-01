@@ -6,10 +6,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kijimaD/mapp/world"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/game"
+	"github.com/kijimaD/mapp/world"
 )
 
 func main() {
@@ -21,7 +20,7 @@ func main() {
 	ebiten.SetWindowClosingHandled(true)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOn)
 
-	g, err := game.NewGame()
+	scene, err := game.NewGame()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,12 +32,12 @@ func main() {
 	go func() {
 		<-sigc
 
-		g.Exit()
+		scene.Exit()
 	}()
 
 	world.StartGame()
 
-	err = ebiten.RunGame(g)
+	err = ebiten.RunGame(scene)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -13,14 +13,12 @@ import (
 // デバッグテキストは左下に出る項目のこと
 
 type RenderDebugTextSystem struct {
-	player   gohan.Entity
 	op       *ebiten.DrawImageOptions
 	debugImg *ebiten.Image
 }
 
-func NewRenderDebugTextSystem(player gohan.Entity) *RenderDebugTextSystem {
+func NewRenderDebugTextSystem() *RenderDebugTextSystem {
 	s := &RenderDebugTextSystem{
-		player:   player,
 		op:       &ebiten.DrawImageOptions{},
 		debugImg: ebiten.NewImage(100, 200),
 	}

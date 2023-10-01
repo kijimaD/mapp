@@ -10,12 +10,14 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/asset"
-	"github.com/kijimaD/mapp/entity"
 	"github.com/kijimaD/mapp/system"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 const sampleRate = 44100
+
+type Game struct{}
 
 // game is an isometric demo game.
 type game struct {
@@ -42,10 +44,13 @@ func NewGame() (*game, error) {
 		panic(err)
 	}
 
-	const numEntities = 30000
-	gohan.Preallocate(numEntities)
-
 	return g, nil
+}
+
+// Main scene, you can use that for settings or main menu
+func (g *game) Setup(w engine.World) {
+	w.AddEntities()
+	w.AddSystems()
 }
 
 // Layout is called when the game's layout changes.
@@ -135,11 +140,6 @@ func (g *game) Update() error {
 				SpriteOffsetY: -1,
 			},
 		}
-
-		if world.World.Player == 0 {
-			world.World.Player = entity.NewPlayer()
-		}
-
 		if !g.addedSystems {
 			g.addSystems()
 			g.addedSystems = true // TODO
@@ -149,10 +149,6 @@ func (g *game) Update() error {
 		world.World.GameOver = false
 	}
 
-	err := gohan.Update()
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -251,11 +247,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 	}
 	world.World.EnvironmentSprites = drawn
-
-	err := gohan.Draw(screen)
-	if err != nil {
-		panic(err)
-	}
 }
 
 // TODO: インデックス直指定をやめる
@@ -279,14 +270,13 @@ func (g *game) addSystems() {
 	gohan.AddSystem(system.NewTickSystem())
 
 	// Input systems.
-
 	gohan.AddSystem(system.NewPlayerMoveSystem())
 
 	// Render systems.
 	gohan.AddSystem(system.NewCameraSystem())
 	gohan.AddSystem(system.NewRenderHudSystem())
-	gohan.AddSystem(system.NewRenderDebugTextSystem(world.World.Player))
-	gohan.AddSystem(system.NewProfileSystem(world.World.Player))
+	gohan.AddSystem(system.NewRenderDebugTextSystem())
+	gohan.AddSystem(system.NewProfileSystem())
 }
 
 func (g *game) loadAssets() error {
