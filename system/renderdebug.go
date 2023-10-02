@@ -8,6 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 // デバッグテキストは左下に出る項目のこと
@@ -17,21 +18,14 @@ type RenderDebugTextSystem struct {
 	debugImg *ebiten.Image
 }
 
-func NewRenderDebugTextSystem() *RenderDebugTextSystem {
-	s := &RenderDebugTextSystem{
-		op:       &ebiten.DrawImageOptions{},
-		debugImg: ebiten.NewImage(100, 200),
+func (s *RenderDebugTextSystem) Draw(w engine.World, screen *ebiten.Image) {
+	if s.op == nil {
+		s.op = &ebiten.DrawImageOptions{}
+		s.debugImg = ebiten.NewImage(100, 200)
 	}
-	return s
-}
 
-func (s *RenderDebugTextSystem) Update(_ gohan.Entity) error {
-	return gohan.ErrUnregister
-}
-
-func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
 	if world.World.IsDebug == false {
-		return nil
+		return
 	}
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})
 	mouseX, mouseY := ebiten.CursorPosition()
@@ -68,5 +62,5 @@ Hover %d
 	op.GeoM.Scale(2, 2)
 	op.GeoM.Translate(0, 800)
 	screen.DrawImage(s.debugImg, op)
-	return nil
+	return
 }

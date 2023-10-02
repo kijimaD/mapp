@@ -7,9 +7,6 @@ import (
 	"github.com/sedyh/mizu/pkg/engine"
 )
 
-const sampleRate = 44100
-
-// game is an isometric demo game.
 type game struct{}
 
 // NewGame returns a new isometric demo game.
@@ -23,6 +20,8 @@ func (g *game) Setup(w engine.World) {
 	w.AddEntities()
 	w.AddSystems(
 		&system.GeneralSystem{},
+		&system.RenderDebugTextSystem{},
+		&system.RenderHudSystem{},
 		system.NewPlayerMoveSystem(),
 		system.NewProfileSystem(),
 	)

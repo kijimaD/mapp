@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/sedyh/mizu/pkg/engine"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
@@ -44,12 +44,15 @@ func NewRenderHudSystem() *RenderHudSystem {
 	return s
 }
 
-func (s *RenderHudSystem) Update(_ gohan.Entity) error {
-	return nil
-}
-
-func (s *RenderHudSystem) Draw(_ gohan.Entity, screen *ebiten.Image) error {
+func (s *RenderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
 	// Draw HUD.
+	if s.op == nil {
+		s.op = &ebiten.DrawImageOptions{}
+		s.hudImg = ebiten.NewImage(1, 1)
+		s.tmpImg = ebiten.NewImage(1, 1)
+		s.tmpImg2 = ebiten.NewImage(1, 1)
+		s.helpImg = ebiten.NewImage(helpW, helpH)
+	}
 
 	if world.World.HUDUpdated {
 		s.hudImg.Clear()
@@ -60,7 +63,6 @@ func (s *RenderHudSystem) Draw(_ gohan.Entity, screen *ebiten.Image) error {
 		world.World.HUDUpdated = false
 	}
 	screen.DrawImage(s.hudImg, nil)
-	return nil
 }
 
 const columns = 3
