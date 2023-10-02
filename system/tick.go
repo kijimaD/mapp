@@ -1,9 +1,8 @@
 package system
 
 import (
-	"code.rocketnine.space/tslocum/gohan"
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 type TickSystem struct{}
@@ -14,7 +13,7 @@ func NewTickSystem() *TickSystem {
 	return s
 }
 
-func (s *TickSystem) Update(_ gohan.Entity) error {
+func (s *TickSystem) Update(w engine.World) {
 	// Update date display.
 	if world.World.Ticks%world.MonthTicks == 0 {
 		world.World.HUDUpdated = true
@@ -24,9 +23,4 @@ func (s *TickSystem) Update(_ gohan.Entity) error {
 		world.TickMessages()
 	}
 	world.World.Ticks++
-	return nil
-}
-
-func (s *TickSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
-	return gohan.ErrUnregister
 }

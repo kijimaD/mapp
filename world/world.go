@@ -12,10 +12,8 @@ import (
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/asset"
-	"github.com/kijimaD/mapp/component"
 	"github.com/lafriks/go-tiled"
 )
 
@@ -68,10 +66,6 @@ type PowerPlant struct {
 }
 
 func Reset() {
-	for _, e := range gohan.AllEntities() {
-		e.Remove()
-	}
-
 	rand.Seed(time.Now().UnixNano())
 
 	World.Funds = startingFunds
@@ -214,24 +208,6 @@ func BuildStructure(structureType int, hover bool, placeX int, placeY int, inter
 		}
 		return structure, nil
 	}
-
-	createTileEntity := func(t *tiled.LayerTile, x float64, y float64) gohan.Entity {
-		mapTile := gohan.NewEntity()
-		mapTile.AddComponent(&component.Position{
-			X: x,
-			Y: y,
-		})
-		mapTile.AddComponent(&component.Renderable{
-			Image:          World.TileImages[t.Tileset.FirstGID+t.ID],
-			HorizontalFlip: t.HorizontalFlip,
-			VerticalFlip:   t.VerticalFlip,
-			DiagonalFlip:   t.DiagonalFlip,
-		})
-
-		return mapTile
-	}
-	_ = createTileEntity
-	// TODO Add entity
 
 	valid := true
 	// 道のタイルがすでにあるか判定

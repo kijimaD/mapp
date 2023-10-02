@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"image/color"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kijimaD/mapp/world"
@@ -33,20 +32,14 @@ func (s *RenderDebugTextSystem) Draw(w engine.World, screen *ebiten.Image) {
 	ebitenutil.DebugPrintAt(
 		s.debugImg,
 		fmt.Sprintf(`[DEBUG]
-ENV %d
 ENT %d
-UPD %d
-DRA %d
 TPS %0.0f
 FPS %0.0f
 Mouse (%d,%d)
 Tile (%.0f,%.0f)
-Hover %d
+HoverType %d
 `,
-			world.World.EnvironmentSprites,
-			gohan.CurrentEntities(),
-			gohan.CurrentUpdates(),
-			gohan.CurrentDraws(),
+			w.Entities(),
 			ebiten.CurrentTPS(),
 			ebiten.CurrentFPS(),
 			mouseX,

@@ -24,6 +24,7 @@ func (g *game) Setup(w engine.World) {
 		&system.RenderHudSystem{},
 		system.NewPlayerMoveSystem(),
 		system.NewProfileSystem(),
+		system.NewTickSystem(),
 	)
 }
 
