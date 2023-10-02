@@ -39,3 +39,8 @@ type Renderable struct {
 type Describable struct {
 	Info string
 }
+
+// 名前を持つ
+type Name struct {
+	Name string
+}

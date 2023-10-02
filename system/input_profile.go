@@ -1,12 +1,13 @@
 package system
 
 import (
+	"fmt"
 	"os"
 	"runtime/pprof"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 type profileSystem struct {
@@ -17,18 +18,19 @@ func NewProfileSystem() *profileSystem {
 	return &profileSystem{}
 }
 
-func (s *profileSystem) Update(_ gohan.Entity) error {
+func (s *profileSystem) Update(w engine.World) {
 	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		if s.cpuProfile == nil {
+			fmt.Println("profile active")
 			cpuProfile, err := os.Create("mapp.prof")
 			s.cpuProfile = cpuProfile
 			if err != nil {
-				return err
+				return
 			}
 
 			err = pprof.StartCPUProfile(s.cpuProfile)
 			if err != nil {
-				return err
+				return
 			}
 		} else {
 			pprof.StopCPUProfile()
@@ -37,9 +39,5 @@ func (s *profileSystem) Update(_ gohan.Entity) error {
 			s.cpuProfile = nil
 		}
 	}
-	return nil
-}
-
-func (s *profileSystem) Draw(_ gohan.Entity, _ *ebiten.Image) error {
-	return gohan.ErrUnregister
+	return
 }

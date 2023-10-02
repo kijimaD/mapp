@@ -9,6 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/game"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 func main() {
@@ -20,10 +21,7 @@ func main() {
 	ebiten.SetWindowClosingHandled(true)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOn)
 
-	scene, err := game.NewGame()
-	if err != nil {
-		log.Fatal(err)
-	}
+	scene := game.NewGame()
 
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc,
@@ -37,7 +35,7 @@ func main() {
 
 	world.StartGame()
 
-	err = ebiten.RunGame(scene)
+	err := ebiten.RunGame(engine.NewGame(scene))
 	if err != nil {
 		log.Fatal(err)
 	}
