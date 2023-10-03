@@ -1,4 +1,4 @@
-package game
+package scene
 
 import (
 	"os"
@@ -7,15 +7,15 @@ import (
 	"github.com/sedyh/mizu/pkg/engine"
 )
 
-type game struct{}
+type scene struct{}
 
-// NewGame returns a new isometric demo game.
-func NewGame() *game {
-	return &game{}
+// NewScene returns a new isometric demo scene.
+func NewScene() *scene {
+	return &scene{}
 }
 
 // Main scene, you can use that for settings or main menu
-func (g *game) Setup(w engine.World) {
+func (g *scene) Setup(w engine.World) {
 	w.AddComponents()
 	w.AddEntities()
 	w.AddSystems(
@@ -28,6 +28,6 @@ func (g *game) Setup(w engine.World) {
 	)
 }
 
-func (g *game) Exit() {
+func (g *scene) Exit() {
 	os.Exit(0)
 }

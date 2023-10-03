@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/mapp/game"
+	"github.com/kijimaD/mapp/scene"
 	"github.com/kijimaD/mapp/world"
 	"github.com/sedyh/mizu/pkg/engine"
 )
@@ -21,7 +21,7 @@ func main() {
 	ebiten.SetWindowClosingHandled(true)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOn)
 
-	scene := game.NewGame()
+	scene := scene.NewScene()
 
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc,
