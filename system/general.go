@@ -13,43 +13,31 @@ import (
 
 const sampleRate = 44100
 
-type GeneralSystem struct {
+type generalSystem struct {
 	w, h        int
 	op          *ebiten.DrawImageOptions
 	debugMode   bool
 	updateTicks int
 }
 
-var GenVar = GeneralSystem{
-	op:          &ebiten.DrawImageOptions{},
-	updateTicks: 0,
+func NewGeneralSystem() *generalSystem {
+	return &generalSystem{
+		op:          &ebiten.DrawImageOptions{},
+		updateTicks: 0,
+	}
 }
 
-func NewGame() (*GeneralSystem, error) {
-	g := &GeneralSystem{
-		op:        &ebiten.DrawImageOptions{},
-		debugMode: true,
-	}
-
-	err := g.loadAssets()
-	if err != nil {
-		panic(err)
-	}
-
-	return g, nil
-}
-
-func (g *GeneralSystem) Update(w engine.World) {
+func (g *generalSystem) Update(w engine.World) {
 	if ebiten.IsWindowBeingClosed() {
 		g.Exit()
 		return
 	}
 
 	const updateSidebarDelay = 144 * 3
-	GenVar.updateTicks++
-	if GenVar.updateTicks == updateSidebarDelay {
+	g.updateTicks++
+	if g.updateTicks == updateSidebarDelay {
 		world.World.HUDUpdated = true
-		//GenVar.updateTicks = 0
+		//g.updateTicks = 0
 		// TODO
 	}
 
@@ -124,7 +112,7 @@ func (g *GeneralSystem) Update(w engine.World) {
 	return
 }
 
-func (g *GeneralSystem) renderSprite(
+func (g *generalSystem) renderSprite(
 	x float64,
 	y float64,
 	offsetx float64,
@@ -153,36 +141,36 @@ func (g *GeneralSystem) renderSprite(
 		return 0
 	}
 
-	GenVar.op.GeoM.Reset()
+	g.op.GeoM.Reset()
 
 	if hFlip {
-		GenVar.op.GeoM.Scale(-1, 1)
-		GenVar.op.GeoM.Translate(world.TileSize, 0)
+		g.op.GeoM.Scale(-1, 1)
+		g.op.GeoM.Translate(world.TileSize, 0)
 	}
 	if vFlip {
-		GenVar.op.GeoM.Scale(1, -1)
-		GenVar.op.GeoM.Translate(0, world.TileSize)
+		g.op.GeoM.Scale(1, -1)
+		g.op.GeoM.Translate(0, world.TileSize)
 	}
 
 	// Move to current isometric position.
-	GenVar.op.GeoM.Translate(xi, yi+offsety)
+	g.op.GeoM.Translate(xi, yi+offsety)
 	// Translate camera position.
-	GenVar.op.GeoM.Translate(-world.World.CamX, -world.World.CamY)
+	g.op.GeoM.Translate(-world.World.CamX, -world.World.CamY)
 	// Zoom.
-	GenVar.op.GeoM.Scale(world.World.CamScale, world.World.CamScale)
+	g.op.GeoM.Scale(world.World.CamScale, world.World.CamScale)
 	// Center.
-	GenVar.op.GeoM.Translate(cx, cy)
+	g.op.GeoM.Translate(cx, cy)
 
-	GenVar.op.ColorM.Reset()
-	GenVar.op.ColorM.Scale(colorScale, colorScale, colorScale, alpha)
+	g.op.ColorM.Reset()
+	g.op.ColorM.Scale(colorScale, colorScale, colorScale, alpha)
 
-	target.DrawImage(sprite, GenVar.op)
-	GenVar.op.ColorM.Reset()
+	target.DrawImage(sprite, g.op)
+	g.op.ColorM.Reset()
 
 	return 1
 }
 
-func (g *GeneralSystem) Draw(w engine.World, screen *ebiten.Image) {
+func (g *generalSystem) Draw(w engine.World, screen *ebiten.Image) {
 	const heightFactor = 10 // 1つ階層が上がるとどれだけ上方向にずらして表示するか
 	// タイル描画。タイルはEntityになっていない
 	// エンティティ個別に描くのではなく、タイルそれぞれについてイテレートして描画する
@@ -199,19 +187,19 @@ func (g *GeneralSystem) Draw(w engine.World, screen *ebiten.Image) {
 				colorScale := 1.0
 				alpha := 1.0
 
-				sprite, err := GenVar.tileToImage(tile.TileType)
+				sprite, err := g.tileToImage(tile.TileType)
 				if err != nil {
 					continue
 				}
-				drawn += GenVar.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, sprite, screen)
+				drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, sprite, screen)
 
 				// プレビュー表示
 				if tile.Hover {
 					colorScale = 0.6
 					alpha := 0.8
-					previewSprite, err := GenVar.tileToImage(world.World.PreviewTileType)
+					previewSprite, err := g.tileToImage(world.World.PreviewTileType)
 					if err == nil {
-						drawn += GenVar.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, previewSprite, screen)
+						drawn += g.renderSprite(float64(x), float64(y), 0, float64(i*-heightFactor), 0, 1, colorScale, alpha, false, false, previewSprite, screen)
 					}
 				}
 			}
@@ -221,7 +209,7 @@ func (g *GeneralSystem) Draw(w engine.World, screen *ebiten.Image) {
 }
 
 // TODO: インデックス直指定をやめる
-func (g *GeneralSystem) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
+func (g *generalSystem) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
 	var sprite *ebiten.Image
 	img := world.GrassTile
 	if tileType == world.BusStopTile {
@@ -236,11 +224,11 @@ func (g *GeneralSystem) tileToImage(tileType world.TileType) (*ebiten.Image, err
 	return sprite, nil
 }
 
-func (g *GeneralSystem) loadAssets() error {
+func (g *generalSystem) loadAssets() error {
 	asset.ImgWhiteSquare.Fill(color.White)
 	return nil
 }
 
-func (g *GeneralSystem) Exit() {
+func (g *generalSystem) Exit() {
 	os.Exit(0)
 }
