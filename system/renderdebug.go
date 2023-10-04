@@ -12,17 +12,19 @@ import (
 
 // デバッグテキストは左下に出る項目のこと
 
-type RenderDebugTextSystem struct {
+type renderDebugTextSystem struct {
 	op       *ebiten.DrawImageOptions
 	debugImg *ebiten.Image
 }
 
-func (s *RenderDebugTextSystem) Draw(w engine.World, screen *ebiten.Image) {
-	if s.op == nil {
-		s.op = &ebiten.DrawImageOptions{}
-		s.debugImg = ebiten.NewImage(100, 200)
+func NewRenderDebugTextSystem() *renderDebugTextSystem {
+	return &renderDebugTextSystem{
+		op:       &ebiten.DrawImageOptions{},
+		debugImg: ebiten.NewImage(100, 200),
 	}
+}
 
+func (s *renderDebugTextSystem) Draw(w engine.World, screen *ebiten.Image) {
 	if world.World.IsDebug == false {
 		return
 	}
