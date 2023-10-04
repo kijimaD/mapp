@@ -4,47 +4,44 @@ import (
 	"fmt"
 	"image/color"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 // デバッグテキストは左下に出る項目のこと
 
-type RenderDebugTextSystem struct {
-	player   gohan.Entity
+type renderDebugTextSystem struct {
 	op       *ebiten.DrawImageOptions
 	debugImg *ebiten.Image
 }
 
-func NewRenderDebugTextSystem(player gohan.Entity) *RenderDebugTextSystem {
-	s := &RenderDebugTextSystem{
-		player:   player,
+func NewRenderDebugTextSystem() *renderDebugTextSystem {
+	return &renderDebugTextSystem{
 		op:       &ebiten.DrawImageOptions{},
 		debugImg: ebiten.NewImage(100, 200),
 	}
-	return s
 }
 
-func (s *RenderDebugTextSystem) Update(_ gohan.Entity) error {
-	return gohan.ErrUnregister
-}
-
-func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error {
+func (s *renderDebugTextSystem) Draw(w engine.World, screen *ebiten.Image) {
 	if world.World.IsDebug == false {
-		return nil
+		return
 	}
 	s.debugImg.Fill(color.RGBA{0, 0, 0, 80})
 	mouseX, mouseY := ebiten.CursorPosition()
 	tileX, tileY := world.ScreenToCartesian(mouseX, mouseY)
 	ebitenutil.DebugPrintAt(
 		s.debugImg,
-		fmt.Sprintf("[DEBUG]\nENV %d\nENT %d\nUPD %d\nDRA %d\nTPS %0.0f\nFPS %0.0f\nMouse (%d,%d)\nTile (%.0f,%.0f)\nHover %d\n",
-			world.World.EnvironmentSprites,
-			gohan.CurrentEntities(),
-			gohan.CurrentUpdates(),
-			gohan.CurrentDraws(),
+		fmt.Sprintf(`[DEBUG]
+ENT %d
+TPS %0.0f
+FPS %0.0f
+Mouse (%d,%d)
+Tile (%.0f,%.0f)
+HoverType %d
+`,
+			w.Entities(),
 			ebiten.CurrentTPS(),
 			ebiten.CurrentFPS(),
 			mouseX,
@@ -60,5 +57,5 @@ func (s *RenderDebugTextSystem) Draw(e gohan.Entity, screen *ebiten.Image) error
 	op.GeoM.Scale(2, 2)
 	op.GeoM.Translate(0, 800)
 	screen.DrawImage(s.debugImg, op)
-	return nil
+	return
 }

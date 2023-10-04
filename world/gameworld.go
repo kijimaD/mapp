@@ -3,8 +3,8 @@ package world
 import (
 	"image"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/kijimaD/mapp/entity"
 	"github.com/lafriks/go-tiled"
 	"golang.org/x/text/message"
 )
@@ -12,7 +12,7 @@ import (
 type GameWorld struct {
 	Level *GameLevel
 
-	Player gohan.Entity
+	Player entity.Player
 
 	ScreenW, ScreenH int
 

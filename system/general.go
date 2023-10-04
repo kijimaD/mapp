@@ -1,67 +1,36 @@
-package game
+package system
 
 import (
 	"fmt"
 	"image/color"
 	"os"
-	"sync"
-
-	"code.rocketnine.space/tslocum/gohan"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/asset"
-	"github.com/kijimaD/mapp/entity"
-	"github.com/kijimaD/mapp/system"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 const sampleRate = 44100
 
-// game is an isometric demo game.
-type game struct {
-	w, h           int
-	op             *ebiten.DrawImageOptions
-	disableEsc     bool
-	debugMode      bool
-	cpuProfile     *os.File
-	movementSystem *system.MovementSystem
-	addedSystems   bool
-	updateTicks    int
-	sync.Mutex
+type generalSystem struct {
+	w, h        int
+	op          *ebiten.DrawImageOptions
+	debugMode   bool
+	updateTicks int
 }
 
-// NewGame returns a new isometric demo game.
-func NewGame() (*game, error) {
-	g := &game{
-		op:        &ebiten.DrawImageOptions{},
-		debugMode: true,
+func NewGeneralSystem() *generalSystem {
+	return &generalSystem{
+		op:          &ebiten.DrawImageOptions{},
+		updateTicks: 0,
 	}
-
-	err := g.loadAssets()
-	if err != nil {
-		panic(err)
-	}
-
-	const numEntities = 30000
-	gohan.Preallocate(numEntities)
-
-	return g, nil
 }
 
-// Layout is called when the game's layout changes.
-func (g *game) Layout(w, h int) (int, int) {
-	if w != g.w || h != g.h {
-		world.World.ScreenW, world.World.ScreenH = w, h
-		g.w, g.h = w, h
-		world.World.HUDUpdated = true
-	}
-	return g.w, g.h
-}
-
-func (g *game) Update() error {
+func (g *generalSystem) Update(w engine.World) {
 	if ebiten.IsWindowBeingClosed() {
 		g.Exit()
-		return nil
+		return
 	}
 
 	const updateSidebarDelay = 144 * 3
@@ -77,7 +46,7 @@ func (g *game) Update() error {
 
 		err := world.LoadTileset()
 		if err != nil {
-			return err
+			return
 		}
 
 		// 平原レイヤーで埋める
@@ -136,28 +105,14 @@ func (g *game) Update() error {
 			},
 		}
 
-		if world.World.Player == 0 {
-			world.World.Player = entity.NewPlayer()
-		}
-
-		if !g.addedSystems {
-			g.addSystems()
-			g.addedSystems = true // TODO
-		}
-
 		world.World.ResetGame = false
 		world.World.GameOver = false
 	}
 
-	err := gohan.Update()
-	if err != nil {
-		return err
-	}
-	return nil
+	return
 }
 
-// renderSprite renders a sprite on the screen.
-func (g *game) renderSprite(
+func (g *generalSystem) renderSprite(
 	x float64,
 	y float64,
 	offsetx float64,
@@ -215,7 +170,7 @@ func (g *game) renderSprite(
 	return 1
 }
 
-func (g *game) Draw(screen *ebiten.Image) {
+func (g *generalSystem) Draw(w engine.World, screen *ebiten.Image) {
 	const heightFactor = 10 // 1つ階層が上がるとどれだけ上方向にずらして表示するか
 	// タイル描画。タイルはEntityになっていない
 	// エンティティ個別に描くのではなく、タイルそれぞれについてイテレートして描画する
@@ -251,15 +206,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 		}
 	}
 	world.World.EnvironmentSprites = drawn
-
-	err := gohan.Draw(screen)
-	if err != nil {
-		panic(err)
-	}
 }
 
 // TODO: インデックス直指定をやめる
-func (g *game) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
+func (g *generalSystem) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
 	var sprite *ebiten.Image
 	img := world.GrassTile
 	if tileType == world.BusStopTile {
@@ -274,26 +224,11 @@ func (g *game) tileToImage(tileType world.TileType) (*ebiten.Image, error) {
 	return sprite, nil
 }
 
-func (g *game) addSystems() {
-	// Simulation systems.
-	gohan.AddSystem(system.NewTickSystem())
-
-	// Input systems.
-	g.movementSystem = system.NewMovementSystem()
-	gohan.AddSystem(system.NewPlayerMoveSystem(world.World.Player, g.movementSystem))
-
-	// Render systems.
-	gohan.AddSystem(system.NewCameraSystem())
-	gohan.AddSystem(system.NewRenderHudSystem())
-	gohan.AddSystem(system.NewRenderDebugTextSystem(world.World.Player))
-	gohan.AddSystem(system.NewProfileSystem(world.World.Player))
-}
-
-func (g *game) loadAssets() error {
+func (g *generalSystem) loadAssets() error {
 	asset.ImgWhiteSquare.Fill(color.White)
 	return nil
 }
 
-func (g *game) Exit() {
+func (g *generalSystem) Exit() {
 	os.Exit(0)
 }

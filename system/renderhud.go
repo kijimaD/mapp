@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/sedyh/mizu/pkg/engine"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
@@ -18,9 +18,8 @@ const (
 	helpH = 220
 )
 
-type RenderHudSystem struct {
+type renderHudSystem struct {
 	Position *component.Position
-	Velocity *component.Velocity
 
 	op           *ebiten.DrawImageOptions
 	hudImg       *ebiten.Image
@@ -30,8 +29,8 @@ type RenderHudSystem struct {
 	sidebarColor color.RGBA
 }
 
-func NewRenderHudSystem() *RenderHudSystem {
-	s := &RenderHudSystem{
+func NewRenderHudSystem() *renderHudSystem {
+	s := &renderHudSystem{
 		op:      &ebiten.DrawImageOptions{},
 		hudImg:  ebiten.NewImage(1, 1),
 		tmpImg:  ebiten.NewImage(1, 1),
@@ -45,12 +44,7 @@ func NewRenderHudSystem() *RenderHudSystem {
 	return s
 }
 
-func (s *RenderHudSystem) Update(_ gohan.Entity) error {
-	return nil
-}
-
-func (s *RenderHudSystem) Draw(_ gohan.Entity, screen *ebiten.Image) error {
-	// Draw HUD.
+func (s *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
 	if world.World.HUDUpdated {
 		s.hudImg.Clear()
 		s.drawSidebar()
@@ -60,13 +54,12 @@ func (s *RenderHudSystem) Draw(_ gohan.Entity, screen *ebiten.Image) error {
 		world.World.HUDUpdated = false
 	}
 	screen.DrawImage(s.hudImg, nil)
-	return nil
 }
 
 const columns = 3
 const buttonWidth = world.SidebarWidth / columns
 
-func (s *RenderHudSystem) drawSidebar() {
+func (s *renderHudSystem) drawSidebar() {
 	bounds := s.hudImg.Bounds()
 	if bounds.Dx() != world.World.ScreenW || bounds.Dy() != world.World.ScreenH {
 		s.hudImg = ebiten.NewImage(world.World.ScreenW, world.World.ScreenH)
@@ -130,7 +123,7 @@ func (s *RenderHudSystem) drawSidebar() {
 	s.hudImg.SubImage(image.Rect(world.SidebarWidth-1, 0, world.SidebarWidth, world.World.ScreenH)).(*ebiten.Image).Fill(color.Black)
 }
 
-func (s *RenderHudSystem) drawButtonBackground(img *ebiten.Image, r image.Rectangle, selected bool) {
+func (s *renderHudSystem) drawButtonBackground(img *ebiten.Image, r image.Rectangle, selected bool) {
 	buttonShade := uint8(142)
 	colorButton := color.RGBA{buttonShade, buttonShade, buttonShade, 255}
 
@@ -142,7 +135,7 @@ func (s *RenderHudSystem) drawButtonBackground(img *ebiten.Image, r image.Rectan
 	img.SubImage(r).(*ebiten.Image).Fill(bgColor)
 }
 
-func (s *RenderHudSystem) drawButtonBorder(img *ebiten.Image, r image.Rectangle, selected bool) {
+func (s *renderHudSystem) drawButtonBorder(img *ebiten.Image, r image.Rectangle, selected bool) {
 	borderSize := 2
 
 	lightBorderShade := uint8(216)
@@ -170,7 +163,7 @@ func (s *RenderHudSystem) drawButtonBorder(img *ebiten.Image, r image.Rectangle,
 	img.SubImage(image.Rect(r.Max.X-borderSize, r.Min.Y, r.Max.X, r.Max.Y)).(*ebiten.Image).Fill(bottomRightBorder)
 }
 
-func (s *RenderHudSystem) drawTooltip() {
+func (s *renderHudSystem) drawTooltip() {
 	label := world.TooltipText()
 	if label == "" {
 		return
@@ -204,7 +197,7 @@ func maxLen(v []string) int {
 	return max
 }
 
-func (s *RenderHudSystem) drawMessages() {
+func (s *renderHudSystem) drawMessages() {
 	lines := len(world.World.Messages)
 	if lines == 0 {
 		return
@@ -241,7 +234,7 @@ func (s *RenderHudSystem) drawMessages() {
 	s.hudImg.DrawImage(s.tmpImg, op)
 }
 
-func (s *RenderHudSystem) drawDate(y int) {
+func (s *renderHudSystem) drawDate(y int) {
 	const datePadding = 10
 	month, year := world.Date()
 	label := month
@@ -268,7 +261,7 @@ func (s *RenderHudSystem) drawDate(y int) {
 	s.hudImg.DrawImage(s.tmpImg2, op)
 }
 
-func (s *RenderHudSystem) drawFunds(y int) {
+func (s *renderHudSystem) drawFunds(y int) {
 	label := world.World.Printer.Sprintf("$%d", world.World.Funds)
 
 	scale := 2.0
@@ -282,7 +275,7 @@ func (s *RenderHudSystem) drawFunds(y int) {
 	s.hudImg.DrawImage(s.tmpImg2, op)
 }
 
-func (s *RenderHudSystem) drawHelp() {
+func (s *renderHudSystem) drawHelp() {
 	if world.World.HelpPage < 0 {
 		return
 	}

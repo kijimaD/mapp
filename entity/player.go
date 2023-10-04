@@ -1,15 +1,7 @@
 package entity
 
-import (
-	"code.rocketnine.space/tslocum/gohan"
-	"github.com/kijimaD/mapp/component"
-)
+import "github.com/kijimaD/mapp/component"
 
-func NewPlayer() gohan.Entity {
-	player := gohan.NewEntity()
-
-	player.AddComponent(&component.Position{})
-	player.AddComponent(&component.Velocity{})
-
-	return player
+type Player struct {
+	Position component.Position
 }

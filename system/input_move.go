@@ -5,31 +5,24 @@ import (
 	"os"
 	"strings"
 
-	"code.rocketnine.space/tslocum/gohan"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 type playerMoveSystem struct {
-	Position *component.Position
-
-	player   gohan.Entity
-	movement *MovementSystem
-
 	scrollDragX, scrollDragY         int
 	scrollCamStartX, scrollCamStartY float64
 }
 
-func NewPlayerMoveSystem(player gohan.Entity, m *MovementSystem) *playerMoveSystem {
+func NewPlayerMoveSystem() *playerMoveSystem {
 	return &playerMoveSystem{
-		player:      player,
-		movement:    m,
 		scrollDragX: -1,
 		scrollDragY: -1,
 	}
 }
+
 func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY int, playSound bool) (*world.Structure, error) {
 	cost := world.StructureCosts[structureType]
 	if world.World.Funds < cost {
@@ -66,23 +59,23 @@ func (s *playerMoveSystem) buildStructure(structureType int, tileX int, tileY in
 	return structure, err
 }
 
-func (s *playerMoveSystem) Update(e gohan.Entity) error {
+func (s *playerMoveSystem) Update(w engine.World) {
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		os.Exit(0)
-		return nil
+		return
 	}
 
 	// デバッグモード
 	if ebiten.IsKeyPressed(ebiten.KeyShift) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
 		world.World.IsDebug = !world.World.IsDebug
-		return nil
+		return
 	}
 
 	if world.World.GameOver {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			world.World.ResetGame = true
 		}
-		return nil
+		return
 	}
 
 	// Update target zoom level.
@@ -143,7 +136,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		if x != 0 || y != 0 {
 			world.World.GotCursorPosition = true
 		} else {
-			return nil
+			return
 		}
 	}
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonMiddle) {
@@ -206,7 +199,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 				}
 			}
 		}
-		return nil
+		return
 	}
 
 	// ヘルプページ
@@ -240,7 +233,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 				world.World.HUDUpdated = true
 			}
 		}
-		return nil
+		return
 	}
 
 	if world.World.HoverStructure != 0 {
@@ -308,7 +301,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 						}
 						world.World.HoverValid = cost <= world.World.Funds
 					}
-					return nil
+					return
 				} else if dragStarted && !ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 					world.World.BuildDragX, world.World.BuildDragY = -1, -1
 				}
@@ -344,11 +337,7 @@ func (s *playerMoveSystem) Update(e gohan.Entity) error {
 		}
 	}
 
-	return nil
-}
-
-func (s *playerMoveSystem) Draw(_ gohan.Entity, _ *ebiten.Image) error {
-	return gohan.ErrUnregister
+	return
 }
 
 func deltaXY(x1, y1, x2, y2 float64) (dx float64, dy float64) {

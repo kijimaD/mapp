@@ -1,8 +1,16 @@
 package component
 
-import (
-	"github.com/hajimehoshi/ebiten/v2"
-)
+import "github.com/hajimehoshi/ebiten/v2"
+
+// 位置を持つ
+type Position struct {
+	X, Y float64
+}
+
+// 移動できる
+type Moveable struct {
+	X, Y float64
+}
 
 // 描画可能なもの
 type Renderable struct {
@@ -25,4 +33,14 @@ type Renderable struct {
 
 	// OverrideColorScale bool
 	// ColorScale         float64
+}
+
+// 説明を持つ
+type Describable struct {
+	Info string
+}
+
+// 名前を持つ
+type Name struct {
+	Name string
 }

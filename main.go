@@ -6,10 +6,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kijimaD/mapp/world"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/kijimaD/mapp/game"
+	"github.com/kijimaD/mapp/scene"
+	"github.com/kijimaD/mapp/world"
+	"github.com/sedyh/mizu/pkg/engine"
 )
 
 func main() {
@@ -21,10 +21,7 @@ func main() {
 	ebiten.SetWindowClosingHandled(true)
 	ebiten.SetFPSMode(ebiten.FPSModeVsyncOn)
 
-	g, err := game.NewGame()
-	if err != nil {
-		log.Fatal(err)
-	}
+	scene := scene.NewScene()
 
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc,
@@ -33,13 +30,36 @@ func main() {
 	go func() {
 		<-sigc
 
-		g.Exit()
+		scene.Exit()
 	}()
 
 	world.StartGame()
-
-	err = ebiten.RunGame(g)
+	err := ebiten.RunGame(NewGame(engine.NewGame(scene)))
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// Layout()の結果をebitenから取り出すために定義している
+// https://github.com/sedyh/mizu/issues/8#issuecomment-1528772092
+type Game struct {
+	e ebiten.Game
+}
+
+func NewGame(e ebiten.Game) *Game {
+	return &Game{e}
+}
+
+func (g *Game) Update() error {
+	return g.e.Update()
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	g.e.Draw(screen)
+}
+
+func (g *Game) Layout(w, h int) (int, int) {
+	world.World.ScreenW = w
+	world.World.ScreenH = h
+	return w, h
 }

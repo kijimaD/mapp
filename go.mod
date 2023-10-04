@@ -3,10 +3,9 @@ module github.com/kijimaD/mapp
 go 1.20
 
 require (
-	code.rocketnine.space/tslocum/gohan v1.0.0
-	github.com/beefsack/go-astar v0.0.0-20200827232313-4ecf9e304482
-	github.com/hajimehoshi/ebiten/v2 v2.3.6
+	github.com/hajimehoshi/ebiten/v2 v2.3.7
 	github.com/lafriks/go-tiled v0.7.0
+	github.com/sedyh/mizu v1.0.4
 	golang.org/x/text v0.3.7
 )
 
