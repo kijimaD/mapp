@@ -54,24 +54,70 @@ func NewRenderHudSystem() *renderHudSystem {
 
 func generateUI() *ebitenui.UI {
 	buttonImage, _ := loadButtonImage()
-
 	face, _ := loadFont(20)
-
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
+			widget.RowLayoutOpts.Spacing(4),
+		)),
 	)
 
-	button := widget.NewButton(
+	button1 := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(widget.AnchorLayoutData{
-				HorizontalPosition: widget.AnchorLayoutPositionCenter,
-				VerticalPosition:   widget.AnchorLayoutPositionCenter,
-			}),
+			widget.WidgetOpts.LayoutData(
+				widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				},
+			),
+			widget.WidgetOpts.LayoutData(
+				widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+					Stretch:  false,
+				},
+			),
+			widget.WidgetOpts.MinSize(40, 40),
 		),
 
 		widget.ButtonOpts.Image(buttonImage),
 
-		widget.ButtonOpts.Text("Hello, World!", face, &widget.ButtonTextColor{
+		widget.ButtonOpts.Text("break", face, &widget.ButtonTextColor{
+			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+		}),
+
+		widget.ButtonOpts.TextPadding(widget.Insets{
+			Left:   4,
+			Right:  4,
+			Top:    4,
+			Bottom: 4,
+		}),
+
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			println("button clicked")
+		}),
+	)
+	button2 := widget.NewButton(
+		widget.ButtonOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(
+				widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				},
+			),
+			widget.WidgetOpts.LayoutData(
+				widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+					Stretch:  false,
+				},
+			),
+			widget.WidgetOpts.MinSize(40, 40),
+		),
+
+		widget.ButtonOpts.Image(buttonImage),
+
+		widget.ButtonOpts.Text("road", face, &widget.ButtonTextColor{
 			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
 		}),
 
@@ -87,7 +133,8 @@ func generateUI() *ebitenui.UI {
 		}),
 	)
 
-	rootContainer.AddChild(button)
+	rootContainer.AddChild(button1)
+	rootContainer.AddChild(button2)
 
 	// construct the UI
 	ui := ebitenui.UI{
@@ -110,7 +157,6 @@ func loadButtonImage() (*widget.ButtonImage, error) {
 }
 
 func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
-	r.ui.Draw(screen)
 	if world.World.HUDUpdated {
 		r.hudImg.Clear()
 		r.drawSidebar()
@@ -121,6 +167,8 @@ func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
 	}
 	// 1つの画像を作って描画するという感じか。それぞれ分けて作成した画像を重ね合わせるという感じではなく
 	screen.DrawImage(r.hudImg, nil)
+
+	r.ui.Draw(screen)
 }
 
 func (r *renderHudSystem) Update(w engine.World) {
