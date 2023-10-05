@@ -20,8 +20,10 @@ import (
 )
 
 const (
-	helpW = 480
-	helpH = 220
+	helpW       = 480
+	helpH       = 220
+	columns     = 3
+	buttonWidth = world.SidebarWidth / columns
 )
 
 type renderHudSystem struct {
@@ -174,9 +176,6 @@ func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
 func (r *renderHudSystem) Update(w engine.World) {
 	r.ui.Update()
 }
-
-const columns = 3
-const buttonWidth = world.SidebarWidth / columns
 
 func (s *renderHudSystem) drawSidebar() {
 	bounds := s.hudImg.Bounds()
