@@ -17,17 +17,20 @@ import (
 	"github.com/lafriks/go-tiled"
 )
 
-const startingYear = 1950
-const maxPopulation = 100000
 const (
-	MonthTicks = 144 * 5
-	YearTicks  = MonthTicks * 12
+	startingYear  = 1950
+	maxPopulation = 100000
+	MonthTicks    = 144 * 5
+	YearTicks     = MonthTicks * 12
+	TileSize      = 64
+	startingFunds = 100000
+	startingZoom  = 2.0
+	SidebarWidth  = 199
+	startingTax   = 0.12
+	CameraMinZoom = 0.1
+	CameraMaxZoom = 10.0
+	GrassTile     = uint32(0)
 )
-const TileSize = 64
-const startingFunds = 100000
-const startingZoom = 2.0
-const SidebarWidth = 199
-const startingTax = 0.12
 
 type HUDButton struct {
 	Sprite                       *ebiten.Image
@@ -37,9 +40,6 @@ type HUDButton struct {
 }
 
 var HUDButtons []*HUDButton
-var CameraMinZoom = 0.1
-var CameraMaxZoom = 10.0
-var GrassTile = uint32(0)
 
 var World = &GameWorld{
 	CamScale:       startingZoom,

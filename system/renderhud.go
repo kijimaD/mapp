@@ -5,17 +5,25 @@ import (
 	"image/color"
 	"strings"
 
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/ebitenui/ebitenui"
+	uiimage "github.com/ebitenui/ebitenui/image"
+	"github.com/ebitenui/ebitenui/widget"
+	"github.com/golang/freetype/truetype"
 	"github.com/sedyh/mizu/pkg/engine"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/goregular"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kijimaD/mapp/component"
 	"github.com/kijimaD/mapp/world"
 )
 
 const (
-	helpW = 480
-	helpH = 220
+	helpW       = 480
+	helpH       = 220
+	columns     = 3
+	buttonWidth = world.SidebarWidth / columns
 )
 
 type renderHudSystem struct {
@@ -27,6 +35,7 @@ type renderHudSystem struct {
 	tmpImg2      *ebiten.Image
 	helpImg      *ebiten.Image
 	sidebarColor color.RGBA
+	ui           *ebitenui.UI
 }
 
 func NewRenderHudSystem() *renderHudSystem {
@@ -36,6 +45,7 @@ func NewRenderHudSystem() *renderHudSystem {
 		tmpImg:  ebiten.NewImage(1, 1),
 		tmpImg2: ebiten.NewImage(1, 1),
 		helpImg: ebiten.NewImage(helpW, helpH),
+		ui:      generateUI(),
 	}
 
 	sidebarShade := uint8(108)
@@ -44,20 +54,133 @@ func NewRenderHudSystem() *renderHudSystem {
 	return s
 }
 
-func (s *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
-	if world.World.HUDUpdated {
-		s.hudImg.Clear()
-		s.drawSidebar()
-		s.drawMessages()
-		s.drawTooltip()
-		s.drawHelp()
-		world.World.HUDUpdated = false
+func generateUI() *ebitenui.UI {
+	buttonImage, _ := loadButtonImage()
+	face, _ := loadFont(20)
+	insets := widget.Insets{
+		Top:    0,
+		Left:   200,
+		Right:  0,
+		Bottom: 0,
 	}
-	screen.DrawImage(s.hudImg, nil)
+	rootContainer := widget.NewContainer(
+		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
+		widget.ContainerOpts.Layout(widget.NewRowLayout(
+			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
+			widget.RowLayoutOpts.Padding(insets),
+			widget.RowLayoutOpts.Spacing(4),
+		)),
+	)
+	button1 := widget.NewButton(
+		widget.ButtonOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(
+				widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				},
+			),
+			widget.WidgetOpts.LayoutData(
+				widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+					Stretch:  false,
+				},
+			),
+			widget.WidgetOpts.MinSize(40, 40),
+		),
+
+		widget.ButtonOpts.Image(buttonImage),
+
+		widget.ButtonOpts.Text("break", face, &widget.ButtonTextColor{
+			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+		}),
+
+		widget.ButtonOpts.TextPadding(widget.Insets{
+			Left:   4,
+			Right:  4,
+			Top:    4,
+			Bottom: 4,
+		}),
+
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			println("button clicked")
+		}),
+	)
+	button2 := widget.NewButton(
+		widget.ButtonOpts.WidgetOpts(
+			widget.WidgetOpts.LayoutData(
+				widget.AnchorLayoutData{
+					HorizontalPosition: widget.AnchorLayoutPositionCenter,
+					VerticalPosition:   widget.AnchorLayoutPositionCenter,
+				},
+			),
+			widget.WidgetOpts.LayoutData(
+				widget.RowLayoutData{
+					Position: widget.RowLayoutPositionStart,
+					Stretch:  false,
+				},
+			),
+			widget.WidgetOpts.MinSize(40, 40),
+		),
+
+		widget.ButtonOpts.Image(buttonImage),
+
+		widget.ButtonOpts.Text("road", face, &widget.ButtonTextColor{
+			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
+		}),
+
+		widget.ButtonOpts.TextPadding(widget.Insets{
+			Left:   4,
+			Right:  4,
+			Top:    4,
+			Bottom: 4,
+		}),
+
+		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
+			println("button clicked")
+		}),
+	)
+
+	rootContainer.AddChild(button1)
+	rootContainer.AddChild(button2)
+
+	// construct the UI
+	ui := ebitenui.UI{
+		Container: rootContainer,
+	}
+
+	return &ui
 }
 
-const columns = 3
-const buttonWidth = world.SidebarWidth / columns
+func loadButtonImage() (*widget.ButtonImage, error) {
+	idle := uiimage.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
+	hover := uiimage.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
+	pressed := uiimage.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
+
+	return &widget.ButtonImage{
+		Idle:    idle,
+		Hover:   hover,
+		Pressed: pressed,
+	}, nil
+}
+
+func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
+	if world.World.HUDUpdated {
+		r.hudImg.Clear()
+		r.drawSidebar()
+		r.drawMessages()
+		r.drawTooltip()
+		r.drawHelp()
+		world.World.HUDUpdated = false
+	}
+	// 1つの画像を作って描画するという感じか。それぞれ分けて作成した画像を重ね合わせるという感じではなく
+	screen.DrawImage(r.hudImg, nil)
+
+	r.ui.Draw(screen)
+}
+
+func (r *renderHudSystem) Update(w engine.World) {
+	r.ui.Update()
+}
 
 func (s *renderHudSystem) drawSidebar() {
 	bounds := s.hudImg.Bounds()
@@ -329,4 +452,17 @@ func (s *renderHudSystem) drawHelp() {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(world.World.ScreenW)-helpW, float64(world.World.ScreenH)-helpH)
 	s.hudImg.DrawImage(s.helpImg, op)
+}
+
+func loadFont(size float64) (font.Face, error) {
+	ttfFont, err := truetype.Parse(goregular.TTF)
+	if err != nil {
+		return nil, err
+	}
+
+	return truetype.NewFace(ttfFont, &truetype.Options{
+		Size:    size,
+		DPI:     72,
+		Hinting: font.HintingFull,
+	}), nil
 }

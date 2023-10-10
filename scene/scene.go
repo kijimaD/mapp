@@ -20,8 +20,8 @@ func (g *scene) Setup(w engine.World) {
 	w.AddEntities()
 	w.AddSystems(
 		system.NewGeneralSystem(),
-		system.NewRenderDebugTextSystem(),
 		system.NewRenderHudSystem(),
+		system.NewRenderDebugTextSystem(),
 		system.NewPlayerMoveSystem(),
 		system.NewProfileSystem(),
 		system.NewTickSystem(),
