@@ -57,15 +57,20 @@ func NewRenderHudSystem() *renderHudSystem {
 func generateUI() *ebitenui.UI {
 	buttonImage, _ := loadButtonImage()
 	face, _ := loadFont(20)
+	insets := widget.Insets{
+		Top:    0,
+		Left:   200,
+		Right:  0,
+		Bottom: 0,
+	}
 	rootContainer := widget.NewContainer(
 		widget.ContainerOpts.Layout(widget.NewAnchorLayout()),
 		widget.ContainerOpts.Layout(widget.NewRowLayout(
 			widget.RowLayoutOpts.Direction(widget.DirectionVertical),
-			widget.RowLayoutOpts.Padding(widget.NewInsetsSimple(20)),
+			widget.RowLayoutOpts.Padding(insets),
 			widget.RowLayoutOpts.Spacing(4),
 		)),
 	)
-
 	button1 := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(
