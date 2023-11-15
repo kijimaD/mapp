@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ebitenui/ebitenui"
-	uiimage "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/golang/freetype/truetype"
 	"github.com/sedyh/mizu/pkg/engine"
@@ -55,8 +54,6 @@ func NewRenderHudSystem() *renderHudSystem {
 }
 
 func generateUI() *ebitenui.UI {
-	buttonImage, _ := loadButtonImage()
-	face, _ := loadFont(20)
 	insets := widget.Insets{
 		Top:    0,
 		Left:   200,
@@ -71,99 +68,14 @@ func generateUI() *ebitenui.UI {
 			widget.RowLayoutOpts.Spacing(4),
 		)),
 	)
-	breakbtn := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(
-				widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				},
-			),
-			widget.WidgetOpts.LayoutData(
-				widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-					Stretch:  false,
-				},
-			),
-			widget.WidgetOpts.MinSize(40, 40),
-		),
-		widget.ButtonOpts.Image(buttonImage),
-		widget.ButtonOpts.Text("break", face, &widget.ButtonTextColor{
-			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-		}),
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   4,
-			Right:  4,
-			Top:    4,
-			Bottom: 4,
-		}),
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			println("button clicked")
-		}),
-	)
-	breakbtn.ClickedEvent.AddHandler(func(args interface{}) {
-		world.SetHoverStructure(world.StructureBulldozer)
-	})
-
-	roadbtn := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(
-				widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				},
-			),
-			widget.WidgetOpts.LayoutData(
-				widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-					Stretch:  false,
-				},
-			),
-			widget.WidgetOpts.MinSize(40, 40),
-		),
-
-		widget.ButtonOpts.Image(buttonImage),
-
-		widget.ButtonOpts.Text("road", face, &widget.ButtonTextColor{
-			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-		}),
-
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   4,
-			Right:  4,
-			Top:    4,
-			Bottom: 4,
-		}),
-
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			println("button clicked")
-		}),
-	)
-	roadbtn.ClickedEvent.AddHandler(func(args interface{}) {
-		world.SetHoverStructure(world.StructureRoad)
-	})
-
-	rootContainer.AddChild(breakbtn)
-	rootContainer.AddChild(roadbtn)
-
+	rootContainer.AddChild(breakbtn())
+	rootContainer.AddChild(roadbtn())
 	// construct the UI
 	ui := ebitenui.UI{
 		Container: rootContainer,
 	}
 
 	return &ui
-}
-
-func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := uiimage.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
-	hover := uiimage.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
-	pressed := uiimage.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
-
-	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
-	}, nil
 }
 
 func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
