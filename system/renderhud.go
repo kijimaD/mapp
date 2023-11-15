@@ -119,41 +119,6 @@ func (s *renderHudSystem) drawSidebar() {
 	const buttonHeight = buttonWidth
 	world.World.HUDButtonRects = make([]image.Rectangle, len(world.HUDButtons))
 	var lastButtonY int
-	for i, button := range world.HUDButtons {
-		row := i / columns
-		x, y := (i%columns)*buttonWidth, row*buttonHeight
-		r := image.Rect(x+paddingSize, y+paddingSize, x+buttonWidth-paddingSize, y+buttonHeight-paddingSize)
-
-		if button != nil {
-			selected := world.World.HoverStructure == button.StructureType
-			if button.StructureType == world.StructureToggleHelp {
-				selected = world.World.HelpPage != -1
-			}
-
-			// Draw background.
-			s.drawButtonBackground(s.tmpImg, r, selected)
-
-			// Draw sprite.
-			colorScale := 1.0
-			if selected {
-				colorScale = 0.9
-			}
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(x+paddingSize)+button.SpriteOffsetX, float64(y+paddingSize)+button.SpriteOffsetY)
-			op.ColorM.Scale(colorScale, colorScale, colorScale, 1)
-			s.tmpImg.SubImage(image.Rect(r.Min.X, r.Min.Y, r.Max.X, r.Max.Y)).(*ebiten.Image).DrawImage(button.Sprite, op)
-
-			s.drawButtonBorder(s.tmpImg, r, selected)
-		}
-
-		world.World.HUDButtonRects[i] = r
-		if button != nil {
-			nonHUDButton := button.StructureType == world.StructureToggleHelp
-			if !nonHUDButton {
-				lastButtonY = y
-			}
-		}
-	}
 
 	dateY := lastButtonY + buttonHeight*2 - buttonHeight/2 - 16
 	s.drawDate(dateY)
