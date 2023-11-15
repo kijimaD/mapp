@@ -70,6 +70,8 @@ func generateUI() *ebitenui.UI {
 	)
 	rootContainer.AddChild(breakbtn())
 	rootContainer.AddChild(roadbtn())
+	rootContainer.AddChild(busstopbtn())
+	rootContainer.AddChild(helpbtn())
 	// construct the UI
 	ui := ebitenui.UI{
 		Container: rootContainer,
@@ -113,7 +115,6 @@ func (s *renderHudSystem) drawSidebar() {
 	s.hudImg.SubImage(image.Rect(0, 0, world.SidebarWidth, world.World.ScreenH)).(*ebiten.Image).Fill(s.sidebarColor)
 
 	// Draw buttons.
-
 	const paddingSize = 1
 	const buttonHeight = buttonWidth
 	world.World.HUDButtonRects = make([]image.Rectangle, len(world.HUDButtons))

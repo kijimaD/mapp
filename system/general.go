@@ -59,52 +59,7 @@ func (g *generalSystem) Update(w engine.World) {
 		// Load HUD sprites.
 		op := &ebiten.DrawImageOptions{}
 		op.ColorM.Scale(1, 1, 1, 0.4)
-		world.HUDButtons = []*world.HUDButton{
-			{
-				StructureType: world.StructureBulldozer,
-				Sprite:        world.DrawStructure(world.StructureBulldozer),
-				SpriteOffsetX: 0,
-				SpriteOffsetY: -60,
-			},
-			nil,
-			{
-				StructureType: world.StructureRoad,
-				Sprite:        world.DrawStructure(world.StructureRoad),
-				SpriteOffsetX: 0,
-				SpriteOffsetY: -60,
-			},
-			{
-				StructureType: world.StationBusStop,
-				Sprite:        world.DrawStructure(world.StationBusStop),
-				SpriteOffsetX: 0,
-				SpriteOffsetY: -60,
-			},
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			nil,
-			{
-				StructureType: world.StructureToggleHelp,
-				Sprite:        asset.ImgHelp,
-				SpriteOffsetX: 0,
-				SpriteOffsetY: -1,
-			},
-		}
-
+		world.HUDButtons = []*world.HUDButton{}
 		world.World.ResetGame = false
 		world.World.GameOver = false
 	}
