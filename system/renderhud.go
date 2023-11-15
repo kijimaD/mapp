@@ -71,7 +71,7 @@ func generateUI() *ebitenui.UI {
 			widget.RowLayoutOpts.Spacing(4),
 		)),
 	)
-	button1 := widget.NewButton(
+	breakbtn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(
 				widget.AnchorLayoutData{
@@ -87,25 +87,25 @@ func generateUI() *ebitenui.UI {
 			),
 			widget.WidgetOpts.MinSize(40, 40),
 		),
-
 		widget.ButtonOpts.Image(buttonImage),
-
 		widget.ButtonOpts.Text("break", face, &widget.ButtonTextColor{
 			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
 		}),
-
 		widget.ButtonOpts.TextPadding(widget.Insets{
 			Left:   4,
 			Right:  4,
 			Top:    4,
 			Bottom: 4,
 		}),
-
 		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
 			println("button clicked")
 		}),
 	)
-	button2 := widget.NewButton(
+	breakbtn.ClickedEvent.AddHandler(func(args interface{}) {
+		world.SetHoverStructure(world.StructureBulldozer)
+	})
+
+	roadbtn := widget.NewButton(
 		widget.ButtonOpts.WidgetOpts(
 			widget.WidgetOpts.LayoutData(
 				widget.AnchorLayoutData{
@@ -139,9 +139,12 @@ func generateUI() *ebitenui.UI {
 			println("button clicked")
 		}),
 	)
+	roadbtn.ClickedEvent.AddHandler(func(args interface{}) {
+		world.SetHoverStructure(world.StructureRoad)
+	})
 
-	rootContainer.AddChild(button1)
-	rootContainer.AddChild(button2)
+	rootContainer.AddChild(breakbtn)
+	rootContainer.AddChild(roadbtn)
 
 	// construct the UI
 	ui := ebitenui.UI{
