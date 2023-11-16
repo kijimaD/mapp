@@ -55,8 +55,8 @@ func NewRenderHudSystem() *renderHudSystem {
 
 func generateUI() *ebitenui.UI {
 	insets := widget.Insets{
-		Top:    0,
-		Left:   200,
+		Top:    100,
+		Left:   0,
 		Right:  0,
 		Bottom: 0,
 	}
