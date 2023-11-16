@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ebitenui/ebitenui"
-	uiimage "github.com/ebitenui/ebitenui/image"
 	"github.com/ebitenui/ebitenui/widget"
 	"github.com/golang/freetype/truetype"
 	"github.com/sedyh/mizu/pkg/engine"
@@ -55,11 +54,9 @@ func NewRenderHudSystem() *renderHudSystem {
 }
 
 func generateUI() *ebitenui.UI {
-	buttonImage, _ := loadButtonImage()
-	face, _ := loadFont(20)
 	insets := widget.Insets{
-		Top:    0,
-		Left:   200,
+		Top:    100,
+		Left:   0,
 		Right:  0,
 		Bottom: 0,
 	}
@@ -71,96 +68,16 @@ func generateUI() *ebitenui.UI {
 			widget.RowLayoutOpts.Spacing(4),
 		)),
 	)
-	button1 := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(
-				widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				},
-			),
-			widget.WidgetOpts.LayoutData(
-				widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-					Stretch:  false,
-				},
-			),
-			widget.WidgetOpts.MinSize(40, 40),
-		),
-
-		widget.ButtonOpts.Image(buttonImage),
-
-		widget.ButtonOpts.Text("break", face, &widget.ButtonTextColor{
-			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-		}),
-
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   4,
-			Right:  4,
-			Top:    4,
-			Bottom: 4,
-		}),
-
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			println("button clicked")
-		}),
-	)
-	button2 := widget.NewButton(
-		widget.ButtonOpts.WidgetOpts(
-			widget.WidgetOpts.LayoutData(
-				widget.AnchorLayoutData{
-					HorizontalPosition: widget.AnchorLayoutPositionCenter,
-					VerticalPosition:   widget.AnchorLayoutPositionCenter,
-				},
-			),
-			widget.WidgetOpts.LayoutData(
-				widget.RowLayoutData{
-					Position: widget.RowLayoutPositionStart,
-					Stretch:  false,
-				},
-			),
-			widget.WidgetOpts.MinSize(40, 40),
-		),
-
-		widget.ButtonOpts.Image(buttonImage),
-
-		widget.ButtonOpts.Text("road", face, &widget.ButtonTextColor{
-			Idle: color.NRGBA{0xdf, 0xf4, 0xff, 0xff},
-		}),
-
-		widget.ButtonOpts.TextPadding(widget.Insets{
-			Left:   4,
-			Right:  4,
-			Top:    4,
-			Bottom: 4,
-		}),
-
-		widget.ButtonOpts.ClickedHandler(func(args *widget.ButtonClickedEventArgs) {
-			println("button clicked")
-		}),
-	)
-
-	rootContainer.AddChild(button1)
-	rootContainer.AddChild(button2)
-
+	rootContainer.AddChild(breakbtn())
+	rootContainer.AddChild(roadbtn())
+	rootContainer.AddChild(busstopbtn())
+	rootContainer.AddChild(helpbtn())
 	// construct the UI
 	ui := ebitenui.UI{
 		Container: rootContainer,
 	}
 
 	return &ui
-}
-
-func loadButtonImage() (*widget.ButtonImage, error) {
-	idle := uiimage.NewNineSliceColor(color.NRGBA{R: 170, G: 170, B: 180, A: 255})
-	hover := uiimage.NewNineSliceColor(color.NRGBA{R: 130, G: 130, B: 150, A: 255})
-	pressed := uiimage.NewNineSliceColor(color.NRGBA{R: 100, G: 100, B: 120, A: 255})
-
-	return &widget.ButtonImage{
-		Idle:    idle,
-		Hover:   hover,
-		Pressed: pressed,
-	}, nil
 }
 
 func (r *renderHudSystem) Draw(w engine.World, screen *ebiten.Image) {
@@ -198,46 +115,10 @@ func (s *renderHudSystem) drawSidebar() {
 	s.hudImg.SubImage(image.Rect(0, 0, world.SidebarWidth, world.World.ScreenH)).(*ebiten.Image).Fill(s.sidebarColor)
 
 	// Draw buttons.
-
 	const paddingSize = 1
 	const buttonHeight = buttonWidth
 	world.World.HUDButtonRects = make([]image.Rectangle, len(world.HUDButtons))
 	var lastButtonY int
-	for i, button := range world.HUDButtons {
-		row := i / columns
-		x, y := (i%columns)*buttonWidth, row*buttonHeight
-		r := image.Rect(x+paddingSize, y+paddingSize, x+buttonWidth-paddingSize, y+buttonHeight-paddingSize)
-
-		if button != nil {
-			selected := world.World.HoverStructure == button.StructureType
-			if button.StructureType == world.StructureToggleHelp {
-				selected = world.World.HelpPage != -1
-			}
-
-			// Draw background.
-			s.drawButtonBackground(s.tmpImg, r, selected)
-
-			// Draw sprite.
-			colorScale := 1.0
-			if selected {
-				colorScale = 0.9
-			}
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(x+paddingSize)+button.SpriteOffsetX, float64(y+paddingSize)+button.SpriteOffsetY)
-			op.ColorM.Scale(colorScale, colorScale, colorScale, 1)
-			s.tmpImg.SubImage(image.Rect(r.Min.X, r.Min.Y, r.Max.X, r.Max.Y)).(*ebiten.Image).DrawImage(button.Sprite, op)
-
-			s.drawButtonBorder(s.tmpImg, r, selected)
-		}
-
-		world.World.HUDButtonRects[i] = r
-		if button != nil {
-			nonHUDButton := button.StructureType == world.StructureToggleHelp
-			if !nonHUDButton {
-				lastButtonY = y
-			}
-		}
-	}
 
 	dateY := lastButtonY + buttonHeight*2 - buttonHeight/2 - 16
 	s.drawDate(dateY)
